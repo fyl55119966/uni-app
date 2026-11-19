@@ -24,6 +24,19 @@ const navBook = `<path d="M40.5 25 C33 19 22 19 15 22 V58 C22 55 33 55 40.5 61 C
 const back = `<path d="M50 18 L29 40.5 L50 63"/>`
 const chevron = `<path d="M31 18 L52 40.5 L31 63"/>`
 const search = `<circle cx="36" cy="36" r="17"/><path d="M48 48 L64 64"/>`
+const ordPay = `<rect x="14" y="24" width="52" height="36" rx="6"/><path d="M14 34 H66"/><circle cx="56" cy="48" r="3"/>`
+const ordPickup = `<path d="M40.5 14 L66 26 V55 L40.5 67 L15 55 V26 Z"/><path d="M15 26 L40.5 38 L66 26"/><path d="M40.5 38 V67"/>`
+const ordShip = `<path d="M10 28 H46 V55 H10 Z"/><path d="M46 36 H60 L70 46 V55 H46"/><circle cx="24" cy="58" r="5"/><circle cx="58" cy="58" r="5"/>`
+const ordReceive = `<rect x="16" y="18" width="49" height="50" rx="5"/><path d="M30 32 H51"/><path d="M30 44 H51"/><path d="M30 56 H42"/>`
+const recDeliver = `<rect x="16" y="20" width="49" height="46" rx="5"/><path d="M16 32 H65"/><path d="M28 14 V26"/><path d="M53 14 V26"/>`
+const recAccept = `<path d="M12 44 H50"/><path d="M40 34 L50 44 L40 54"/><path d="M56 24 H66 V64 H56"/>`
+const recDone = `<rect x="16" y="18" width="49" height="50" rx="5"/><path d="M28 44 L37 53 L54 34"/>`
+const recBreach = `<rect x="16" y="18" width="49" height="50" rx="5"/><path d="M30 34 L51 55"/><path d="M51 34 L30 55"/>`
+const mCamera = `<rect x="12" y="24" width="57" height="40" rx="8"/><circle cx="40.5" cy="44" r="11"/><path d="M28 24 L33 16 H48 L53 24"/>`
+const mStar = `<path d="M40.5 12 L49 31 L70 33 L54 47 L59 67 L40.5 56 L22 67 L27 47 L11 33 L32 31 Z"/>`
+const mTicket = `<path d="M12 26 H69 V38 A6 6 0 0 0 69 50 V62 H12 V50 A6 6 0 0 0 12 38 Z"/><path d="M30 26 V62" stroke-dasharray="4 6"/>`
+const mCard = `<rect x="10" y="22" width="61" height="40" rx="6"/><path d="M10 34 H71"/><path d="M20 50 H36"/>`
+const mInvoice = `<path d="M18 12 H63 V69 L56 63 L49 69 L42 63 L35 69 L28 63 L21 69 L18 66 Z"/><path d="M28 28 H53"/><path d="M28 40 H53"/><path d="M28 52 H44"/>`
 
 const icons = [
   { name: 'tab-home', color: GRAY, body: home },
@@ -41,7 +54,20 @@ const icons = [
   { name: 'nav-book', color: GOLD, body: navBook },
   { name: 'ic-back', color: GOLD, body: back },
   { name: 'ic-chevron', color: GOLD, body: chevron },
-  { name: 'ic-search', color: GOLD, body: search }
+  { name: 'ic-search', color: GOLD, body: search },
+  { name: 'ord-pay', color: GOLD, body: ordPay },
+  { name: 'ord-pickup', color: GOLD, body: ordPickup },
+  { name: 'ord-ship', color: GOLD, body: ordShip },
+  { name: 'ord-receive', color: GOLD, body: ordReceive },
+  { name: 'rec-deliver', color: GOLD, body: recDeliver },
+  { name: 'rec-accept', color: GOLD, body: recAccept },
+  { name: 'rec-done', color: GOLD, body: recDone },
+  { name: 'rec-breach', color: GOLD, body: recBreach },
+  { name: 'm-camera', color: GOLD, body: mCamera },
+  { name: 'm-star', color: GOLD, body: mStar },
+  { name: 'm-ticket', color: GOLD, body: mTicket },
+  { name: 'm-card', color: GOLD, body: mCard },
+  { name: 'm-invoice', color: GOLD, body: mInvoice }
 ]
 
 await mkdir(SVG_DIR, { recursive: true })
