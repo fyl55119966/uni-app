@@ -21,10 +21,10 @@ $uni-color-warning: #f0ad4e;
 $uni-color-error: #dd524d;
 
 /* crmeb颜色变量 */
-$theme-color:#E93323; // 主题色-主色
-$theme-color-opacity:rgba(233,51,35,.6); // 主题色-透明色
-$bg-star: #f62c2c;  // 主题渐变色-开始
-$bg-end:#f96e29; // 主题渐变色-结束
+$theme-color:#D9A133; // 主题色-主色
+$theme-color-opacity:rgba(217,161,51,.6); // 主题色-透明色
+$bg-star: #EBC15C;  // 主题渐变色-开始
+$bg-end:#D9A133; // 主题渐变色-结束
 $kf-theme : #3875EA; // 客服主题色
 $kf-star:#3875EA; // 客服渐变色
 $kf-end:#1890FC; // 客服渐变色
@@ -86,3 +86,46 @@ $uni-color-tip: #ccc; // 底部提示文字颜色
 
 // 首页字号
 $uni-index-title-font-size: 34rpx;
+
+/* ============================================================
+ * 上金所有金店 · 设计 token
+ * 取色来源：69 张页面截图（621px 宽，750rpx 基准需 ×1.207 换算）
+ * ============================================================ */
+
+/* 金色系 */
+$gold-600: #D9A133; // 主金（按钮渐变终点、强调文字）
+$gold-500: #D9A83A; // 主金（选中态）
+$gold-400: #EBC15C; // 浅金（按钮渐变起点、描边）
+$gold-200: #F2D9A0; // 金色浅底（chip、徽章）
+$gold-100: #FBF3E2; // 金色极浅底
+$gold-white: #FFFFFF;
+
+/* 米白底 */
+$gold-cream-50: #FAF7F0; // 页面底色
+$gold-cream-100: #FFF6E5; // 区块底
+$gold-cream-200: #F7F2E7; // 卡片替代底
+
+/* 文字 */
+$gold-ink-900: #1F1F1F;
+$gold-ink-800: #2B2B2B;
+$gold-ink-500: #666666;
+$gold-ink-400: #8A8A8A;
+$gold-ink-300: #999999;
+
+/* 线与状态 */
+$gold-line: #EFE7D6; // 1px 卡片描边
+$gold-success: #00A870;
+$gold-success-2: #2FA36B;
+$gold-danger: #E5484D;
+
+/* 圆角 / 间距 */
+$gold-radius-sm: 12rpx;
+$gold-radius: 16rpx;
+$gold-radius-lg: 24rpx;
+$gold-radius-pill: 999rpx;
+$gold-gap: 24rpx;
+$gold-page-pad: 30rpx;
+
+/* 渐变 */
+$gold-gradient: linear-gradient(90deg, #EBC15C 0%, #D9A133 100%);
+$gold-gradient-light: linear-gradient(90deg, #F0C24B 0%, #D9A32E 100%);
