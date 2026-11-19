@@ -19,7 +19,7 @@
 				</view>
 			</view>
 			<view class="profile__qr" @click="todo('邀请有礼')">
-				<view class="profile__qr-box">▦</view>
+				<image class="profile__qr-img" src="/static/images/gold/qr.png" mode="aspectFit" />
 				<text class="profile__qr-text">邀请有礼 ›</text>
 			</view>
 		</view>
@@ -49,7 +49,7 @@
 		</view>
 
 		<view class="fans-card" @click="todo('粉丝收益')">
-			<view class="fans-card__icon">福</view>
+			<image class="fans-card__icon" src="/static/images/gold/invite-coin.png" mode="aspectFit" />
 			<view class="fans-card__body">
 				<view class="fans-card__title-row">
 					<text class="fans-card__title">粉丝收益</text>
@@ -97,7 +97,9 @@
 
 		<view class="logout" @click="logout">退出登录</view>
 
-		<view class="fab" @click="todo('客服')">客服</view>
+		<view class="fab" @click="todo('客服')">
+			<image class="fab__img" src="/static/images/gold/kf.png" mode="aspectFit" />
+		</view>
 
 		<page-footer active="mine" />
 	</view>
@@ -241,17 +243,10 @@ export default {
 		align-items: center;
 	}
 
-	&__qr-box {
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	&__qr-img {
 		width: 92rpx;
 		height: 92rpx;
-		background: $gold-100;
-		border: 1rpx solid $gold-200;
 		border-radius: 12rpx;
-		font-size: 52rpx;
-		color: $gold-600;
 	}
 
 	&__qr-text {
@@ -359,16 +354,10 @@ export default {
 	border-radius: $gold-radius-lg;
 
 	&__icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		width: 96rpx;
 		height: 96rpx;
-		background: linear-gradient(135deg, #F04D4D 0%, #C81E1E 100%);
 		border-radius: 12rpx;
-		font-size: 44rpx;
-		font-weight: 700;
-		color: #FFE9A8;
+		background: $gold-100;
 	}
 
 	&__body {
@@ -515,8 +504,11 @@ export default {
 	height: 92rpx;
 	background: #6B6257;
 	border-radius: 50%;
-	font-size: 22rpx;
-	color: #fff;
 	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.18);
+
+	&__img {
+		width: 60rpx;
+		height: 60rpx;
+	}
 }
 </style>

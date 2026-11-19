@@ -17,7 +17,7 @@
 		</view>
 
 		<view class="hero">
-			<image class="hero__img" src="/static/images/gold/coin-30.png" mode="aspectFill" />
+			<image class="hero__img" :src="heroImage" mode="aspectFill" />
 			<view class="hero__rule">规则说明</view>
 		</view>
 
@@ -72,6 +72,9 @@ export default {
 		}
 	},
 	computed: {
+		heroImage() {
+			return `/static/images/gold/coin-${this.activeGram}.png`
+		},
 		priceText() {
 			return Number(this.coin.price || 0).toFixed(2)
 		},

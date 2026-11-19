@@ -2,21 +2,21 @@ const wait = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const HOME = {
 	brand: { name: '上金所有金店', en: 'Shangjin Gold Stores', logo: '/static/images/gold/logo.png' },
-	banner: '/static/images/gold/home-banner.jpg',
+	banner: '/static/images/gold/home-hero.png',
 	ticker: ['足金9999', '造币工艺', '实时金价', '溢价回购'],
 	promos: [
 		{
 			key: 'goods',
 			title: '实物黄金安心订购',
 			subtitle: '实时金价 · 多规格可选',
-			image: '/static/images/gold/coin-30.png',
+			image: '/static/images/gold/promo-gold.jpg',
 			url: '/pages/coins/index'
 		},
 		{
 			key: 'invite',
 			title: '邀请好友共享好礼',
 			subtitle: '好友完成注册，双方均享好礼',
-			image: '/static/images/gold/home-invite.png',
+			image: '/static/images/gold/promo-invite.png',
 			url: ''
 		}
 	],

@@ -1,9 +1,9 @@
 const CATEGORIES = ['全部', '黄金饰品', '白银饰品', '翡翠饰品']
 
 const BANNERS = [
-	{ id: 1, image: '/static/images/gold/products/p1.jpg', title: '福禄足金套链吊坠', price: 15518.88, gold: 869.93, tag: '马上换' },
-	{ id: 2, image: '/static/images/gold/products/p2.jpg', title: '古法平安扣吊坠', price: 17458.74, gold: 869.93, tag: '马上换' },
-	{ id: 3, image: '/static/images/gold/products/p3.jpg', title: '古法金手镯', price: 13318.6, gold: 869.93, tag: '马上换' }
+	{ id: 1, image: '/static/images/gold/promo-gold.jpg', title: '实物黄金安心订购', price: 15518.88, gold: 869.93, tag: '马上换' },
+	{ id: 2, image: '/static/images/gold/promo-invite.png', title: '邀请好友共享好礼', price: 17458.74, gold: 869.93, tag: '马上换' },
+	{ id: 3, image: '/static/images/gold/promo-jewelry.jpg', title: '古法金饰精选', price: 13318.6, gold: 869.93, tag: '马上换' }
 ]
 
 const PRODUCTS = [

@@ -8,23 +8,6 @@
 				<image class="hero__logo" :src="home.brand.logo" mode="aspectFit" />
 				<text class="hero__name">{{ home.brand.name }}</text>
 			</view>
-
-			<view class="hero__titles">
-				<view class="hero__kicker">
-					<view class="hero__line" />
-					<text class="hero__kicker-text">黄金现货商城</text>
-					<view class="hero__line" />
-				</view>
-				<text class="hero__title">上金所有金店正式上线</text>
-				<text class="hero__sub">专注黄金产品与投资金条在线销售</text>
-			</view>
-
-			<view class="hero__ticker">
-				<template v-for="(item, index) in home.ticker">
-					<text :key="item" class="hero__ticker-item">{{ item }}</text>
-					<text v-if="index < home.ticker.length - 1" :key="item + '-sep'" class="hero__sep">|</text>
-				</template>
-			</view>
 		</view>
 
 		<swiper class="promos" :indicator-dots="true" indicator-color="rgba(255,255,255,.5)"
@@ -177,7 +160,7 @@ export default {
 
 .hero {
 	position: relative;
-	height: 776rpx;
+	height: 750rpx;
 	overflow: hidden;
 
 	&__bg {
@@ -197,7 +180,7 @@ export default {
 		position: relative;
 		display: flex;
 		align-items: center;
-		padding: calc(83rpx + var(--status-bar-height)) $gold-page-pad 0;
+		padding: calc(30rpx + var(--status-bar-height)) $gold-page-pad 0;
 	}
 
 	&__logo {
@@ -283,7 +266,7 @@ export default {
 
 .promos {
 	height: 200rpx;
-	margin: 58rpx $gold-page-pad 0;
+	margin: 94rpx $gold-page-pad 0;
 }
 
 .promo {
