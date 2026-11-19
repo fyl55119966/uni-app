@@ -43,7 +43,7 @@ export default {
 			uni.navigateTo({ url: `/pages/content/guide-detail/index?id=${item.id}` })
 		},
 		service() {
-			uni.navigateTo({ url: '/pages/placeholder/index?title=' + encodeURIComponent('联系客服') + '&desc=' + encodeURIComponent('在线客服在票 19 实现') })
+			uni.navigateTo({ url: '/pages/service/index' })
 		},
 		wiki() {
 			uni.navigateTo({ url: '/pages/content/wiki/index' })

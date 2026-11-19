@@ -58,7 +58,7 @@
 			<view class="subsidy__btn" @click="openMenu({ key: 'subsidy', label: '平台补贴' })">去领取 ›</view>
 		</view>
 
-		<view class="fans-card" @click="todo('粉丝收益')">
+		<view class="fans-card" @click="uni.navigateTo({ url: '/pages/fans/index' })">
 			<image class="fans-card__icon" src="/static/images/gold/invite-coin.png" mode="aspectFit" />
 			<view class="fans-card__body">
 				<view class="fans-card__title-row">
@@ -182,6 +182,10 @@ export default {
 			}
 			if (item.key === 'recycle') {
 				this.openRecycle()
+				return
+			}
+			if (item.key === 'service') {
+				uni.navigateTo({ url: '/pages/service/index' })
 				return
 			}
 			if (item.key === 'guide') {

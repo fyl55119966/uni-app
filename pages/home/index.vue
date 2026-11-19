@@ -138,7 +138,7 @@ export default {
 		},
 		openPromo(item) {
 			if (item.target === 'coins') return uni.reLaunch({ url: '/pages/coins/index' })
-			if (item.target === 'fans') return this.placeholder('我的粉丝', '粉丝收益与邀请记录在票 19 实现')
+			if (item.target === 'fans') return uni.navigateTo({ url: '/pages/fans/index' })
 		},
 		openCenter(item) {
 			uni.navigateTo({ url: '/pages/content/centers/index' })
