@@ -1,4 +1,5 @@
 import { getToken } from './token.js'
+import { isTradingNow } from './price.js'
 
 export function isLoggedIn() {
 	return Boolean(getToken())
@@ -10,4 +11,14 @@ export function requireLogin(redirect = '/pages/home/index') {
 	const query = redirect ? `?redirect=${redirect}` : ''
 	uni.reLaunch({ url: `/pages/login/index${query}` })
 	return false
+}
+
+export function hasRealname() {
+	const user = uni.getStorageSync('gold_user')
+	return Boolean(user && user.realname)
+}
+
+export function canBuyNow(now = new Date()) {
+	if (uni.getStorageSync('gold_force_trading')) return true
+	return isTradingNow(now)
 }

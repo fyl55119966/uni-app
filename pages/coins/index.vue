@@ -59,7 +59,7 @@
 import pageFooter from '@/components/page-footer/index.vue'
 import gPrice from '@/components/g-price/index.vue'
 import { getCoin, coinQuote } from '@/api/coins.js'
-import { requireLogin } from '@/utils/guard.js'
+import { requireLogin, canBuyNow } from '@/utils/guard.js'
 
 export default {
 	components: { pageFooter, gPrice },
@@ -94,7 +94,11 @@ export default {
 		},
 		buy() {
 			if (!requireLogin('/pages/coins/index')) return
-			uni.showToast({ title: '确认订单在票 05 实现', icon: 'none' })
+			if (!canBuyNow()) {
+				uni.showToast({ title: '现在休市中', icon: 'none' })
+				return
+			}
+			uni.navigateTo({ url: `/pages/goods_detail/index?type=bar&gram=${this.activeGram}` })
 		}
 	}
 }

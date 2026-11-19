@@ -21,3 +21,20 @@ export function coinQuote(gram, coin) {
 	const total = calcPrice(gram, coin.price, coin.laborFee)
 	return { total, deposit: depositOf(total) }
 }
+
+export function getBar(gram) {
+	return withMock(() => ({
+		id: `bar-${gram}`,
+		type: 'bar',
+		title: `${gram}g 标准金条`,
+		subtitle: '足金9999 · 投资金条',
+		images: [`/static/images/gold/coin-${gram}.png`],
+		gram: Number(gram),
+		specs: COIN.specs,
+		price: COIN.price,
+		labor: COIN.laborFee,
+		stock: 99,
+		limit: 5,
+		delivery: ['快递配送', '到店自提']
+	}), { url: `/goods/bar/${gram}` })
+}

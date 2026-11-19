@@ -48,6 +48,22 @@
 				"navigationBarTextStyle": "black",
 				"backgroundColor": "#FAF7F0"
 			}
+		},
+		{
+			"path": "pages/goods_detail/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/order_confirm/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
 		}
 	],
 	"globalStyle": {

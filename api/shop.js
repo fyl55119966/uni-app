@@ -25,3 +25,18 @@ const PRODUCTS = [
 export function getShop() {
 	return withMock(() => ({ categories: CATEGORIES, banners: BANNERS, products: PRODUCTS }), { url: '/shop' })
 }
+
+export function getProduct(id) {
+	return withMock(() => {
+		const item = PRODUCTS.find((p) => String(p.id) === String(id))
+		if (!item) return null
+		return {
+			...item,
+			type: 'jewelry',
+			images: [item.image, '/static/images/gold/promo-jewelry.jpg'],
+			stock: 9,
+			limit: 1,
+			delivery: ['快递配送', '到店自提']
+		}
+	}, { url: `/goods/${id}` })
+}
