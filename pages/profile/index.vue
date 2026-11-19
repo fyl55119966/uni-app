@@ -83,7 +83,7 @@ export default {
 			this.form.gender = this.genders[Number(event.detail.value)]
 		},
 		openAddress() {
-			uni.navigateTo({ url: '/pages/placeholder/index?title=' + encodeURIComponent('收货地址') + '&desc=' + encodeURIComponent('地址管理在票 13 实现') })
+			uni.navigateTo({ url: '/pages/address/list/index' })
 		},
 		async save() {
 			if (!this.form.name) return uni.showToast({ title: '请输入昵称', icon: 'none' })

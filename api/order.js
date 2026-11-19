@@ -1,4 +1,5 @@
 import { withMock } from './request.js'
+import { getAddresses } from './address.js'
 import { nextOrderStatus, ORDER_STATUS } from '../utils/orderState.js'
 
 export const STORES = [
@@ -31,7 +32,7 @@ function saveOrders(list) {
 }
 
 export function getCheckout() {
-	return withMock(() => ({ stores: STORES, addresses: ADDRESSES, coupons: COUPONS, subsidy: SUBSIDY }), {
+	return withMock(() => ({ stores: STORES, addresses: getAddresses(), coupons: COUPONS, subsidy: SUBSIDY }), {
 		url: '/order/checkout'
 	})
 }

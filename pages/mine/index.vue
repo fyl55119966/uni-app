@@ -2,8 +2,8 @@
 	<view class="page">
 		<view class="top">
 			<view class="top__left">
-				<text class="top__ico" @click="placeholder('设置', '设置与消息在票 13 实现')">⚙</text>
-				<text class="top__ico" @click="placeholder('消息', '设置与消息在票 13 实现')">🔔</text>
+				<text class="top__ico" @click="goSettings">⚙</text>
+				<text class="top__ico" @click="goMessages">🔔</text>
 			</view>
 			<text class="top__title">我的</text>
 			<view class="top__kf" @click="placeholder('联系客服', '在线客服在票 19 实现')">联系客服</view>
@@ -159,6 +159,12 @@ export default {
 		},
 		openOrderEntry(item) {
 			uni.navigateTo({ url: `/pages/orders/index` })
+		},
+		goSettings() {
+			uni.navigateTo({ url: '/pages/settings/index' })
+		},
+		goMessages() {
+			uni.navigateTo({ url: '/pages/messages/index' })
 		},
 		openProfile() {
 			uni.navigateTo({ url: '/pages/profile/index' })

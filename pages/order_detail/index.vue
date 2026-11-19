@@ -47,7 +47,8 @@
 
 <script>
 import navBar from '@/components/nav-bar/index.vue'
-import { getOrder, STORES, ADDRESSES } from '@/api/order.js'
+import { getOrder, STORES } from '@/api/order.js'
+import { getAddresses } from '@/api/address.js'
 import { ORDER_STATUS_TEXT } from '@/utils/orderState.js'
 
 export default {
@@ -73,7 +74,7 @@ export default {
 				const store = STORES.find((s) => s.id === this.order.storeId)
 				return store ? store.name : '—'
 			}
-			const address = ADDRESSES.find((a) => a.id === this.order.addressId)
+			const address = getAddresses().find((a) => a.id === this.order.addressId)
 			return address ? `${address.name} ${address.region}` : '—'
 		},
 		actionText() {
