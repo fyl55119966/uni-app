@@ -14,11 +14,11 @@
 			indicator-active-color="#D9A133" :autoplay="true" :interval="4000" :circular="true">
 			<swiper-item v-for="item in home.promos" :key="item.key">
 				<view class="promo" @click="openPromo(item)">
-					<view class="promo__text">
+					<image class="promo__img" :src="item.image" mode="aspectFill" />
+					<view v-if="item.overlay" class="promo__text">
 						<text class="promo__title">{{ item.title }}</text>
 						<text class="promo__sub">{{ item.subtitle }}</text>
 					</view>
-					<image class="promo__img" :src="item.image" mode="aspectFill" />
 				</view>
 			</swiper-item>
 		</swiper>
@@ -265,41 +265,41 @@ export default {
 }
 
 .promos {
-	height: 200rpx;
+	height: 250rpx;
 	margin: 94rpx $gold-page-pad 0;
 }
 
 .promo {
-	display: flex;
-	align-items: center;
-	height: 200rpx;
+	position: relative;
+	height: 230rpx;
 	overflow: hidden;
 	background: $gold-cream-100;
 	border: 1rpx solid $gold-line;
 	border-radius: $gold-radius-lg;
 
 	&__text {
-		flex: 1;
+		position: absolute;
+		left: 40rpx;
+		top: 40rpx;
 		display: flex;
 		flex-direction: column;
-		padding: 0 32rpx;
 	}
 
 	&__title {
 		font-size: 34rpx;
 		font-weight: 700;
-		color: $gold-ink-900;
+		color: #4A2A06;
 	}
 
 	&__sub {
 		margin-top: 10rpx;
 		font-size: 22rpx;
-		color: $gold-ink-500;
+		color: #6B4A1C;
 	}
 
 	&__img {
-		width: 300rpx;
-		height: 200rpx;
+		width: 100%;
+		height: 100%;
 	}
 }
 
