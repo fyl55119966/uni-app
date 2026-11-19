@@ -55,7 +55,7 @@
 				</view>
 				<text class="subsidy__tip">抵扣预定金10%，提货抵扣工费</text>
 			</view>
-			<view class="subsidy__btn" @click="todo('领取补贴')">去领取 ›</view>
+			<view class="subsidy__btn" @click="openMenu({ key: 'subsidy', label: '平台补贴' })">去领取 ›</view>
 		</view>
 
 		<view class="fans-card" @click="todo('粉丝收益')">
@@ -182,6 +182,16 @@ export default {
 			}
 			if (item.key === 'recycle') {
 				this.openRecycle()
+				return
+			}
+			const routes = {
+				coupon: '/pages/coupon/index',
+				bank: '/pages/bank/list/index',
+				invoice: '/pages/invoice/list/index',
+				subsidy: '/pages/subsidy/index'
+			}
+			if (routes[item.key]) {
+				uni.navigateTo({ url: routes[item.key] })
 				return
 			}
 			const map = {

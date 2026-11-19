@@ -24,7 +24,10 @@ export const SUBSIDY = { amount: 1000, status: '待领取' }
 const ORDERS_KEY = 'gold_orders'
 
 function readOrders() {
-	return uni.getStorageSync(ORDERS_KEY) || []
+	const raw = uni.getStorageSync(ORDERS_KEY)
+	if (Array.isArray(raw)) return raw
+	if (raw && Array.isArray(raw.data)) return raw.data
+	return []
 }
 
 function saveOrders(list) {
