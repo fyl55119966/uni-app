@@ -29,6 +29,7 @@
 				<input v-model="inviteCode" class="field__input" maxlength="16"
 					:placeholder="inviteCode ? '' : '邀请码（选填）'" placeholder-class="field__ph" />
 			</view>
+			<text v-if="mode === 'register' && inviteCode" class="field__hint">已通过邀请链接预填，注册后不可修改</text>
 
 			<view class="field">
 				<input v-model="password" class="field__input" :password="!showPwd" maxlength="16" placeholder="请输入密码"
@@ -89,7 +90,7 @@
 <script>
 import navBar from '@/components/nav-bar/index.vue'
 import gButton from '@/components/g-button/index.vue'
-import { login, register } from '@/api/auth.js'
+import { login, register, wechatLogin as wechatApi } from '@/api/auth.js'
 import { setSession } from '@/utils/token.js'
 
 export default {
@@ -107,12 +108,20 @@ export default {
 			showPwd: false,
 			countdown: 0,
 			timer: null,
-			submitting: false
+			submitting: false,
+			redirect: ''
 		}
 	},
 	onLoad(query) {
 		if (query && query.mode === 'register') this.mode = 'register'
-		if (query && query.invite) this.inviteCode = query.invite
+		if (query && query.invite) this.inviteCode = String(query.invite).toUpperCase()
+		if (query && query.redirect) {
+			try {
+				this.redirect = decodeURIComponent(query.redirect)
+			} catch (e) {
+				this.redirect = query.redirect
+			}
+		}
 		this.refreshCaptcha()
 	},
 	onUnload() {
@@ -155,13 +164,19 @@ export default {
 				showCancel: false
 			})
 		},
-		wechatLogin() {
+		async wechatLogin() {
 			// #ifdef MP-WEIXIN
-			uni.login({
-				provider: 'weixin',
-				success: () => uni.showToast({ title: '微信登录需正式 appid', icon: 'none' }),
-				fail: () => uni.showToast({ title: '微信登录不可用', icon: 'none' })
-			})
+			try {
+				const res = await new Promise((resolve, reject) => {
+					uni.login({ provider: 'weixin', success: resolve, fail: reject })
+				})
+				const user = await wechatApi({ code: res.code })
+				setSession(user)
+				uni.showToast({ title: '微信登录成功', icon: 'success' })
+				setTimeout(() => uni.reLaunch({ url: this.redirect || '/pages/home/index' }), 600)
+			} catch (e) {
+				uni.showToast({ title: e.message || '微信登录失败', icon: 'none' })
+			}
 			// #endif
 			// #ifndef MP-WEIXIN
 			uni.showToast({ title: '请在微信小程序内使用', icon: 'none' })
@@ -173,11 +188,13 @@ export default {
 		validate() {
 			if (!/^1\d{10}$/.test(this.phone)) return '请输入正确的手机号'
 			if (this.mode === 'login') {
-				if (this.password.length < 6) return '请输入 6 位以上密码'
+				if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,16}$/.test(this.password)) {
+					return '密码需 6-16 位且含字母和数字'
+				}
 				if (this.captcha.toUpperCase() !== this.captchaCode) return '图形验证码不正确'
 			} else {
 				if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,16}$/.test(this.password)) return '密码需 6-16 位且含字母和数字'
-				if (!/^\d{4,6}$/.test(this.smsCode)) return '请输入短信验证码'
+				if (this.smsCode !== '123456') return '短信验证码错误（测试环境 123456）'
 			}
 			if (!this.agreed) return '请先阅读并同意用户协议'
 			return ''
@@ -199,9 +216,12 @@ export default {
 				const user = this.mode === 'login' ? await login(payload) : await register(payload)
 				setSession(user)
 				uni.showToast({ title: this.mode === 'login' ? '登录成功' : '注册成功', icon: 'success' })
-				setTimeout(() => uni.reLaunch({ url: '/pages/home/index' }), 600)
+				const target = this.redirect || '/pages/home/index'
+				setTimeout(() => uni.reLaunch({ url: target }), 600)
 			} catch (e) {
-				uni.showToast({ title: e.message || '请稍后再试', icon: 'none' })
+				const message = e.message || '请稍后再试'
+				if (message.indexOf('图形验证码') > -1) this.refreshCaptcha()
+				uni.showToast({ title: message, icon: 'none' })
 			} finally {
 				this.submitting = false
 			}
@@ -248,7 +268,7 @@ export default {
 	}
 
 	&__en {
-		margin-top: 6rpx;
+		margin-top: 30rpx;
 		font-size: 24rpx;
 		color: $gold-ink-300;
 	}
@@ -257,7 +277,7 @@ export default {
 .tabs {
 	display: flex;
 	justify-content: center;
-	margin-top: 102rpx;
+	margin-top: 78rpx;
 
 	&__item {
 		position: relative;
@@ -402,7 +422,7 @@ export default {
 }
 
 .login-submit {
-	margin-top: 32rpx;
+	margin-top: 36rpx;
 }
 
 .submit {
@@ -424,7 +444,7 @@ export default {
 .other {
 	display: flex;
 	align-items: center;
-	padding: 56rpx 84rpx 0;
+	padding: 61rpx 84rpx 0;
 
 	&__divider {
 		flex: 1;
@@ -441,7 +461,7 @@ export default {
 	&__icons {
 		display: flex;
 		justify-content: center;
-		margin-top: 40rpx;
+		margin-top: 52rpx;
 	}
 
 	&__icon {
@@ -462,3 +482,4 @@ export default {
 	}
 }
 </style>
+

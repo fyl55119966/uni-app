@@ -1,4 +1,4 @@
-﻿name: check
+name: check
 
 on:
   push:
@@ -13,4 +13,4 @@ jobs:
         with:
           node-version: 22
       - run: node tools/check.mjs
-      - run: node --test tests/price.test.js
+      - run: node --test tests/price.test.js tests/auth.test.js

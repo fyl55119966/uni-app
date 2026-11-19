@@ -107,6 +107,7 @@ import pageFooter from '@/components/page-footer/index.vue'
 import gCell from '@/components/g-cell/index.vue'
 import { getMine } from '@/api/mine.js'
 import { logout as logoutApi } from '@/api/auth.js'
+import { requireLogin } from '@/utils/guard.js'
 
 export default {
 	components: { pageFooter, gCell },
@@ -121,6 +122,7 @@ export default {
 		}
 	},
 	onShow() {
+		if (!requireLogin('/pages/mine/index')) return
 		this.load()
 	},
 	methods: {

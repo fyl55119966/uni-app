@@ -1,5 +1,5 @@
 import { BASE_URL, USE_MOCK } from './config.js'
-import { clearSession, getToken } from '@/utils/token.js'
+import { clearSession, getToken } from '../utils/token.js'
 
 const AUTH_CODES = [110002, 110003, 110004]
 let redirecting = false

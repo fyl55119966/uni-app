@@ -1,4 +1,4 @@
-import { calcPrice, depositOf } from '@/utils/price.js'
+import { calcPrice, depositOf } from '../utils/price.js'
 import { withMock } from './request.js'
 
 const COIN = {

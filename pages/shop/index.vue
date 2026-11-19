@@ -55,6 +55,7 @@ import pageFooter from '@/components/page-footer/index.vue'
 import gPrice from '@/components/g-price/index.vue'
 import gEmpty from '@/components/g-empty/index.vue'
 import { getShop } from '@/api/shop.js'
+import { requireLogin } from '@/utils/guard.js'
 
 export default {
 	components: { pageFooter, gPrice, gEmpty },
@@ -84,6 +85,7 @@ export default {
 			return Number(value || 0).toFixed(2)
 		},
 		open(item) {
+			if (!requireLogin('/pages/shop/index')) return
 			uni.showToast({ title: item.title + '：详情在 04 票实现', icon: 'none' })
 		}
 	}

@@ -1,4 +1,4 @@
-import { TOKEN_KEY, USER_KEY } from '@/api/config.js'
+import { TOKEN_KEY, USER_KEY } from '../api/config.js'
 
 export function getToken() {
 	return uni.getStorageSync(TOKEN_KEY) || ''

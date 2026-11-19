@@ -59,6 +59,7 @@
 import pageFooter from '@/components/page-footer/index.vue'
 import gPrice from '@/components/g-price/index.vue'
 import { getCoin, coinQuote } from '@/api/coins.js'
+import { requireLogin } from '@/utils/guard.js'
 
 export default {
 	components: { pageFooter, gPrice },
@@ -92,6 +93,7 @@ export default {
 			this.coin = await getCoin()
 		},
 		buy() {
+			if (!requireLogin('/pages/coins/index')) return
 			uni.showToast({ title: '确认订单在票 05 实现', icon: 'none' })
 		}
 	}
