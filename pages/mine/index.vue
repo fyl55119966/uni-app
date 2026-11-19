@@ -88,10 +88,10 @@
 		<view class="block">
 			<view class="block__head">
 				<text class="block__title">我的回收</text>
-				<text class="block__more" @click="placeholder('我的回收', '回收列表在票 10 实现')">全部回收 ›</text>
+				<text class="block__more" @click="openRecycle()">全部回收 ›</text>
 			</view>
 			<view class="block__grid">
-				<view v-for="item in mine.recycles" :key="item.key" class="entry" @click="placeholder('我的回收', '回收列表在票 10 实现')">
+				<view v-for="item in mine.recycles" :key="item.key" class="entry" @click="openRecycle()">
 					<image class="entry__icon" :src="item.icon" mode="aspectFit" />
 					<text class="entry__label">{{ item.label }}</text>
 				</view>
@@ -160,9 +160,16 @@ export default {
 		openOrderEntry(item) {
 			uni.navigateTo({ url: `/pages/orders/index` })
 		},
+		openRecycle() {
+			uni.navigateTo({ url: '/pages/recycle/list/index' })
+		},
 		openMenu(item) {
 			if (item.key === 'sell') {
 				uni.navigateTo({ url: '/pages/recycle/apply/index' })
+				return
+			}
+			if (item.key === 'recycle') {
+				this.openRecycle()
 				return
 			}
 			const map = {

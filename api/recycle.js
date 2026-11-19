@@ -21,6 +21,8 @@ export async function createRecycle(payload) {
 		recycleNo: 'R' + Date.now(),
 		createdAt: Date.now(),
 		status: 'pending_ship',
+		title: `${payload.gram}g 投资金条`,
+		image: `/static/images/gold/coin-${payload.gram}.png`,
 		...payload
 	}
 	const list = read()
