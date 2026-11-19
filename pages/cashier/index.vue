@@ -172,7 +172,8 @@ export default {
 			}
 			this.showPwd = false
 			this.loading = true
-			if (this.pwd !== '123456') {
+			const real = uni.getStorageSync('gold_pay_pwd') || '123456'
+			if (this.pwd !== real) {
 				await failOrder(this.orderNo, { method: 'balance', stage: this.stage, message: '支付密码错误' })
 				this.loading = false
 				return uni.showToast({ title: '支付密码错误', icon: 'none' })

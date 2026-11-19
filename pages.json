@@ -113,6 +113,30 @@
 				"navigationBarTextStyle": "black",
 				"backgroundColor": "#FAF7F0"
 			}
+		},
+		{
+			"path": "pages/security/reset/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/security/pay/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/security/cancel/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
 		}
 	],
 	"globalStyle": {
