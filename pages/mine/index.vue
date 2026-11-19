@@ -2,13 +2,23 @@
 	<view class="page">
 		<view class="top">
 			<view class="top__left">
-				<text class="top__ico" @click="todo('设置')">⚙</text>
-				<text class="top__ico" @click="todo('消息')">🔔</text>
+				<text class="top__ico" @click="placeholder('设置', '设置与消息在票 13 实现')">⚙</text>
+				<text class="top__ico" @click="placeholder('消息', '设置与消息在票 13 实现')">🔔</text>
 			</view>
 			<text class="top__title">我的</text>
-			<view class="top__kf" @click="todo('客服')">联系客服</view>
+			<view class="top__kf" @click="placeholder('联系客服', '在线客服在票 19 实现')">联系客服</view>
 		</view>
 
+		<view v-if="!logged" class="login-card" @click="goLogin">
+			<image class="login-card__avatar" src="/static/images/gold/avatar.png" mode="aspectFill" />
+			<view class="login-card__body">
+				<text class="login-card__title">登录 / 注册</text>
+				<text class="login-card__desc">登录后查看订单、余额与粉丝收益</text>
+			</view>
+			<text class="login-card__arrow">›</text>
+		</view>
+
+		<template v-else>
 		<view class="profile">
 			<image class="profile__avatar" :src="mine.user.avatar" mode="aspectFill" />
 			<view class="profile__info">
@@ -18,7 +28,7 @@
 					<text class="profile__copy">⧉</text>
 				</view>
 			</view>
-			<view class="profile__qr" @click="todo('邀请有礼')">
+			<view class="profile__qr" @click="placeholder('粉丝收益', '粉丝收益在票 19 实现')">
 				<image class="profile__qr-img" src="/static/images/gold/qr.png" mode="aspectFit" />
 				<text class="profile__qr-text">邀请有礼 ›</text>
 			</view>
@@ -67,9 +77,10 @@
 				<text class="block__more" @click="goOrders">全部订购 ›</text>
 			</view>
 			<view class="block__grid">
-				<view v-for="item in mine.orders" :key="item.key" class="entry" @click="todo(item.label)">
+				<view v-for="item in mine.orders" :key="item.key" class="entry" @click="openOrderEntry(item)">
 					<image class="entry__icon" :src="item.icon" mode="aspectFit" />
 					<text class="entry__label">{{ item.label }}</text>
+					<text v-if="orderCounts[item.key]" class="entry__badge">{{ orderCounts[item.key] }}</text>
 				</view>
 			</view>
 		</view>
@@ -77,10 +88,10 @@
 		<view class="block">
 			<view class="block__head">
 				<text class="block__title">我的回收</text>
-				<text class="block__more" @click="todo('全部回收')">全部回收 ›</text>
+				<text class="block__more" @click="placeholder('我的回收', '回收列表在票 10 实现')">全部回收 ›</text>
 			</view>
 			<view class="block__grid">
-				<view v-for="item in mine.recycles" :key="item.key" class="entry" @click="todo(item.label)">
+				<view v-for="item in mine.recycles" :key="item.key" class="entry" @click="placeholder('我的回收', '回收列表在票 10 实现')">
 					<image class="entry__icon" :src="item.icon" mode="aspectFit" />
 					<text class="entry__label">{{ item.label }}</text>
 				</view>
@@ -93,8 +104,9 @@
 		</view>
 
 		<view class="logout" @click="logout">退出登录</view>
+		</template>
 
-		<view class="fab" @click="todo('客服')">
+		<view class="fab" @click="placeholder('在线客服', '在线客服在票 19 实现')">
 			<image class="fab__img" src="/static/images/gold/kf.png" mode="aspectFit" />
 		</view>
 
@@ -106,13 +118,16 @@
 import pageFooter from '@/components/page-footer/index.vue'
 import gCell from '@/components/g-cell/index.vue'
 import { getMine } from '@/api/mine.js'
+import { getOrders } from '@/api/order.js'
 import { logout as logoutApi } from '@/api/auth.js'
-import { requireLogin } from '@/utils/guard.js'
+import { isLoggedIn } from '@/utils/guard.js'
 
 export default {
 	components: { pageFooter, gCell },
 	data() {
 		return {
+			logged: false,
+			orderCounts: {},
 			mine: {
 				user: { name: '', member: '', avatar: '', balance: 0, fans: 0, subsidy: 0, subsidyStatus: '' },
 				orders: [],
@@ -122,12 +137,39 @@ export default {
 		}
 	},
 	onShow() {
-		if (!requireLogin('/pages/mine/index')) return
-		this.load()
+		this.logged = isLoggedIn()
+		if (this.logged) this.load()
 	},
 	methods: {
 		async load() {
-			this.mine = await getMine()
+			const [mine, orders] = await Promise.all([getMine(), getOrders()])
+			this.mine = mine
+			this.orderCounts = {
+				pay: orders.filter((o) => o.status === 'pending_deposit').length,
+				pickup: orders.filter((o) => o.status === 'pending_pickup' && !o.balancePaid).length,
+				ship: orders.filter((o) => o.status === 'pending_pickup' && o.balancePaid && o.mode === 'logistics').length,
+				receive: orders.filter((o) => o.status === 'pending_pickup' && o.balancePaid && o.mode === 'pickup').length
+			}
+		},
+		goLogin() {
+			uni.reLaunch({ url: '/pages/login/index?redirect=/pages/mine/index' })
+		},
+		placeholder(title, desc) {
+			uni.navigateTo({ url: `/pages/placeholder/index?title=${encodeURIComponent(title)}&desc=${encodeURIComponent(desc || '')}` })
+		},
+		openOrderEntry(item) {
+			uni.navigateTo({ url: `/pages/orders/index` })
+		},
+		openMenu(item) {
+			const map = {
+				coupon: '优惠券在票 16 实现',
+				bank: '银行卡在票 15 实现',
+				invoice: '发票在票 16 实现',
+				subsidy: '补贴在票 16 实现',
+				sell: '出售/回收在票 09 实现',
+				guide: '新手教程在票 18 实现'
+			}
+			this.placeholder(item.label, map[item.key] || '')
 		},
 		money(value) {
 			return Number(value || 0).toFixed(2)
@@ -151,13 +193,71 @@ export default {
 			uni.navigateTo({ url: '/pages/orders/index' })
 		},
 		todo(name) {
-			uni.showToast({ title: name + '在后续票据实现', icon: 'none' })
+			this.placeholder(name, '在后续票据实现')
 		}
 	}
 }
 </script>
 
 <style lang="scss" scoped>
+.login-card {
+	display: flex;
+	align-items: center;
+	margin: 24rpx;
+	padding: 32rpx;
+	background: #fff;
+	border-radius: $gold-radius-lg;
+
+	&__avatar {
+		width: 96rpx;
+		height: 96rpx;
+		border-radius: 50%;
+	}
+
+	&__body {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		margin-left: 24rpx;
+	}
+
+	&__title {
+		font-size: 32rpx;
+		font-weight: 700;
+		color: $gold-ink-900;
+	}
+
+	&__desc {
+		margin-top: 8rpx;
+		font-size: 22rpx;
+		color: $gold-ink-400;
+	}
+
+	&__arrow {
+		font-size: 36rpx;
+		color: $gold-ink-300;
+	}
+}
+
+.entry {
+	position: relative;
+
+	&__badge {
+		position: absolute;
+		top: -8rpx;
+		right: 6rpx;
+		min-width: 28rpx;
+		height: 28rpx;
+		padding: 0 6rpx;
+		background: $gold-danger;
+		border-radius: 14rpx;
+		font-size: 18rpx;
+		line-height: 28rpx;
+		color: #fff;
+		text-align: center;
+	}
+}
+
 .page {
 	min-height: 100vh;
 	padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
