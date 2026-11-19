@@ -89,6 +89,22 @@
 				"backgroundColor": "#FAF7F0",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/recycle/apply/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/recycle/contract/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
 		}
 	],
 	"globalStyle": {

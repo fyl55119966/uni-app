@@ -161,6 +161,10 @@ export default {
 			uni.navigateTo({ url: `/pages/orders/index` })
 		},
 		openMenu(item) {
+			if (item.key === 'sell') {
+				uni.navigateTo({ url: '/pages/recycle/apply/index' })
+				return
+			}
 			const map = {
 				coupon: '优惠券在票 16 实现',
 				bank: '银行卡在票 15 实现',
