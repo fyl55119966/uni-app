@@ -12,6 +12,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node --version && npm --version
+      - run: echo "::notice::node $(node --version) npm $(npm --version)"
       - run: node tools/check.mjs
-      - run: node --test tests
+      - run: |
+          set -o pipefail
+          node --test tests 2>&1 | tee test.log || {
+            while IFS= read -r line; do echo "::error::$line"; done < test.log
+            exit 1
+          }
