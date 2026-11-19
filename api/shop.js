@@ -1,3 +1,5 @@
+import { withMock } from './request.js'
+
 const CATEGORIES = ['全部', '黄金饰品', '白银饰品', '翡翠饰品']
 
 const BANNERS = [
@@ -21,5 +23,5 @@ const PRODUCTS = [
 ]
 
 export function getShop() {
-	return Promise.resolve({ categories: CATEGORIES, banners: BANNERS, products: PRODUCTS })
+	return withMock(() => ({ categories: CATEGORIES, banners: BANNERS, products: PRODUCTS }), { url: '/shop' })
 }

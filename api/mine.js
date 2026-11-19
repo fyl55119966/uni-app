@@ -1,3 +1,5 @@
+import { withMock } from './request.js'
+
 const USER = {
 	name: '用户3002',
 	member: 'M2611073017816310',
@@ -32,5 +34,5 @@ const MENUS = [
 ]
 
 export function getMine() {
-	return Promise.resolve({ user: USER, orders: ORDERS, recycles: RECYCLES, menus: MENUS })
+	return withMock(() => ({ user: USER, orders: ORDERS, recycles: RECYCLES, menus: MENUS }), { url: '/mine' })
 }

@@ -1,4 +1,4 @@
-﻿import { existsSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, statSync } from 'node:fs'
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
@@ -50,6 +50,14 @@ try {
 } catch (error) {
   errors.push(`pages.json 解析失败: ${error.message}`)
   pages = { pages: [], subPackages: [] }
+}
+
+// 0. JSON 入口文件不能带 UTF-8 BOM：HBuilderX 的 webpack 会报 Unexpected token
+for (const name of ['package.json', 'pages.json', 'manifest.json']) {
+  const raw = await readFile(path.join(ROOT, name))
+  if (raw[0] === 0xef && raw[1] === 0xbb && raw[2] === 0xbf) {
+    errors.push(`${name}: 带 UTF-8 BOM，HBuilderX 编译会失败，需存为 UTF-8 无 BOM`)
+  }
 }
 
 const routes = [...(pages.pages || [])]

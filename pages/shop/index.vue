@@ -28,7 +28,8 @@
 			</view>
 		</view>
 
-		<view class="grid">
+		<g-empty v-if="!filtered.length" text="暂无商品" desc="换个分类看看" />
+		<view v-else class="grid">
 			<view v-for="item in filtered" :key="item.id" class="card" @click="open(item)">
 				<view class="card__media">
 					<image class="card__img" :src="item.image" mode="aspectFill" />
@@ -37,7 +38,9 @@
 				<text class="card__title">{{ item.title }}</text>
 				<text class="card__fav">♡ {{ item.fav }}人关注  已售{{ item.sold }}件</text>
 				<text class="card__gram">{{ item.gram }}</text>
-				<text class="card__price">¥{{ money(item.price) }}</text>
+				<view class="card__price">
+					<g-price :value="item.price" size="md" />
+				</view>
 				<text class="card__labor">金价 + ¥{{ money(item.labor) }}/g工艺费</text>
 				<view class="card__buy" @click.stop="open(item)">购买</view>
 			</view>
@@ -49,10 +52,12 @@
 
 <script>
 import pageFooter from '@/components/page-footer/index.vue'
+import gPrice from '@/components/g-price/index.vue'
+import gEmpty from '@/components/g-empty/index.vue'
 import { getShop } from '@/api/shop.js'
 
 export default {
-	components: { pageFooter },
+	components: { pageFooter, gPrice, gEmpty },
 	data() {
 		return {
 			gold: '861.42',

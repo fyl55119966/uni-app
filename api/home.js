@@ -1,3 +1,5 @@
+import { withMock } from './request.js'
+
 const wait = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const HOME = {
@@ -57,6 +59,8 @@ const HOME = {
 }
 
 export async function getHome() {
-	await wait()
-	return HOME
+	return withMock(async () => {
+		await wait()
+		return HOME
+	}, { url: '/home' })
 }

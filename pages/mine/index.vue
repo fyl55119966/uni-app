@@ -88,11 +88,8 @@
 		</view>
 
 		<view class="menu">
-			<view v-for="item in mine.menus" :key="item.key" class="menu__row" @click="todo(item.label)">
-				<image class="menu__icon" :src="item.icon" mode="aspectFit" />
-				<text class="menu__label">{{ item.label }}</text>
-				<text class="menu__arrow">›</text>
-			</view>
+			<g-cell v-for="item in mine.menus" :key="item.key" :label="item.label" :icon="item.icon"
+				@click="todo(item.label)" />
 		</view>
 
 		<view class="logout" @click="logout">退出登录</view>
@@ -107,10 +104,12 @@
 
 <script>
 import pageFooter from '@/components/page-footer/index.vue'
+import gCell from '@/components/g-cell/index.vue'
 import { getMine } from '@/api/mine.js'
+import { logout as logoutApi } from '@/api/auth.js'
 
 export default {
-	components: { pageFooter },
+	components: { pageFooter, gCell },
 	data() {
 		return {
 			mine: {
@@ -139,7 +138,10 @@ export default {
 				title: '退出登录',
 				content: '确定退出当前账号？',
 				success: (res) => {
-					if (res.confirm) uni.reLaunch({ url: '/pages/login/index' })
+					if (res.confirm) {
+						logoutApi()
+						uni.reLaunch({ url: '/pages/login/index' })
+					}
 				}
 			})
 		},

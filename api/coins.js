@@ -1,4 +1,5 @@
 import { calcPrice, depositOf } from '@/utils/price.js'
+import { withMock } from './request.js'
 
 const COIN = {
 	price: 861.42,
@@ -13,7 +14,7 @@ const COIN = {
 }
 
 export function getCoin() {
-	return Promise.resolve({ ...COIN })
+	return withMock(() => ({ ...COIN }), { url: '/coins' })
 }
 
 export function coinQuote(gram, coin) {

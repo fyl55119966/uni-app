@@ -63,9 +63,8 @@
 				<text class="agree__link" @click.stop="showAgreement">《用户协议隐私政策》</text>
 			</view>
 
-			<view class="submit" :class="{ 'is-disabled': submitting }" @click="submit">
-				{{ submitting ? '处理中…' : mode === 'login' ? '登录' : '注册' }}
-			</view>
+			<g-button class="login-submit" block :loading="submitting" :text="mode === 'login' ? '登录' : '注册'"
+				@click="submit" />
 		</view>
 
 		<view class="other">
@@ -89,10 +88,12 @@
 
 <script>
 import navBar from '@/components/nav-bar/index.vue'
+import gButton from '@/components/g-button/index.vue'
 import { login, register } from '@/api/auth.js'
+import { setSession } from '@/utils/token.js'
 
 export default {
-	components: { navBar },
+	components: { navBar, gButton },
 	data() {
 		return {
 			mode: 'login',
@@ -196,8 +197,7 @@ export default {
 					payload.smsCode = this.smsCode
 				}
 				const user = this.mode === 'login' ? await login(payload) : await register(payload)
-				uni.setStorageSync('gold_token', user.token)
-				uni.setStorageSync('gold_user', user)
+				setSession(user)
 				uni.showToast({ title: this.mode === 'login' ? '登录成功' : '注册成功', icon: 'success' })
 				setTimeout(() => uni.reLaunch({ url: '/pages/home/index' }), 600)
 			} catch (e) {
@@ -399,6 +399,10 @@ export default {
 		font-size: 22rpx;
 		color: $gold-600;
 	}
+}
+
+.login-submit {
+	margin-top: 32rpx;
 }
 
 .submit {

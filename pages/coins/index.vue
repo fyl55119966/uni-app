@@ -2,9 +2,7 @@
 	<view class="page">
 		<view class="top">
 			<view class="top__price">
-				<text class="top__sign">¥</text>
-				<text class="top__num">{{ priceText }}</text>
-				<text class="top__unit">/g</text>
+				<g-price :value="coin.price" unit="/g" size="sm" />
 			</view>
 			<text class="top__title">金币</text>
 		</view>
@@ -59,10 +57,11 @@
 
 <script>
 import pageFooter from '@/components/page-footer/index.vue'
+import gPrice from '@/components/g-price/index.vue'
 import { getCoin, coinQuote } from '@/api/coins.js'
 
 export default {
-	components: { pageFooter },
+	components: { pageFooter, gPrice },
 	data() {
 		return {
 			coin: { price: 0, laborFee: 0, specs: [], chart: '', detailImages: [] },
