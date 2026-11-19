@@ -93,6 +93,7 @@
 <script>
 import navBar from '@/components/nav-bar/index.vue'
 import { getRecycleForm, createRecycle } from '@/api/recycle.js'
+import { hasRealname } from '@/utils/guard.js'
 import { recycleQuote } from '@/utils/recycle.js'
 import { requireLogin } from '@/utils/guard.js'
 
@@ -148,6 +149,16 @@ export default {
 			uni.navigateTo({ url: '/pages/recycle/contract/index' })
 		},
 		async submit() {
+			if (!hasRealname()) {
+				return uni.showModal({
+					title: '需要实名认证',
+					content: '完成实名认证后才可发起回收',
+					confirmText: '去实名',
+					success: (res) => {
+						if (res.confirm) uni.navigateTo({ url: '/pages/realname/index' })
+					}
+				})
+			}
 			if (!this.agreed) return uni.showToast({ title: '请先阅读并签署回收合同', icon: 'none' })
 			if (!(Number(this.gram) > 0)) return uni.showToast({ title: '请输入克重', icon: 'none' })
 			if (!(Number(this.quantity) > 0)) return uni.showToast({ title: '请输入数量', icon: 'none' })

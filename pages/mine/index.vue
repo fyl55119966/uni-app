@@ -19,11 +19,11 @@
 		</view>
 
 		<template v-else>
-		<view class="profile">
+		<view class="profile" @click="openProfile">
 			<image class="profile__avatar" :src="mine.user.avatar" mode="aspectFill" />
 			<view class="profile__info">
 				<text class="profile__name">{{ mine.user.name }}</text>
-				<view class="profile__member" @click="copyMember">
+				<view class="profile__member" @click.stop="copyMember">
 					<text class="profile__member-text">会员号 {{ mine.user.member }}</text>
 					<text class="profile__copy">⧉</text>
 				</view>
@@ -159,6 +159,9 @@ export default {
 		},
 		openOrderEntry(item) {
 			uni.navigateTo({ url: `/pages/orders/index` })
+		},
+		openProfile() {
+			uni.navigateTo({ url: '/pages/profile/index' })
 		},
 		openRecycle() {
 			uni.navigateTo({ url: '/pages/recycle/list/index' })

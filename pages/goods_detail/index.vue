@@ -199,7 +199,7 @@ export default {
 					confirmText: '去实名',
 					success: (res) => {
 						if (res.confirm) {
-							uni.navigateTo({ url: '/pages/placeholder/index?title=' + encodeURIComponent('实名认证') })
+							uni.navigateTo({ url: '/pages/realname/index' })
 						}
 					}
 				})
