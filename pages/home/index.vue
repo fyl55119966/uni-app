@@ -141,19 +141,19 @@ export default {
 			if (item.target === 'fans') return this.placeholder('我的粉丝', '粉丝收益与邀请记录在票 19 实现')
 		},
 		openCenter(item) {
-			this.placeholder(item.name, item.address)
+			uni.navigateTo({ url: '/pages/content/centers/index' })
 		},
 		openCenterList() {
-			this.placeholder('全国运营中心', '运营中心列表在票 18 实现')
+			uni.navigateTo({ url: '/pages/content/centers/index' })
 		},
 		openWikiList() {
-			this.placeholder('黄金百科', '百科列表在票 18 实现')
+			uni.navigateTo({ url: '/pages/content/wiki/index' })
 		},
 		openArticle(item) {
-			this.placeholder('百科详情', item.title)
+			uni.navigateTo({ url: `/pages/content/wiki-detail/index?id=${item.id}` })
 		},
 		openRealname() {
-			this.placeholder('实名认证', '个人/企业实名在票 12 实现')
+			uni.navigateTo({ url: '/pages/realname/index' })
 		},
 		placeholder(title, desc = '') {
 			uni.navigateTo({ url: `/pages/placeholder/index?title=${encodeURIComponent(title)}&desc=${encodeURIComponent(desc)}` })

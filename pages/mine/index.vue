@@ -184,6 +184,10 @@ export default {
 				this.openRecycle()
 				return
 			}
+			if (item.key === 'guide') {
+				uni.navigateTo({ url: '/pages/content/guide/index' })
+				return
+			}
 			const routes = {
 				coupon: '/pages/coupon/index',
 				bank: '/pages/bank/list/index',
@@ -200,7 +204,7 @@ export default {
 				invoice: '发票在票 16 实现',
 				subsidy: '补贴在票 16 实现',
 				sell: '出售/回收在票 09 实现',
-				guide: '新手教程在票 18 实现'
+				guide: ''
 			}
 			this.placeholder(item.label, map[item.key] || '')
 		},
