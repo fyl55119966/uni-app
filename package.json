@@ -2,8 +2,8 @@
   "name": "uni-app",
   "version": "1.0.0",
   "scripts": {
-    "test": "node --test tests/price.test.js tests/auth.test.js tests/settle.test.js",
-    "check": "node tools/check.mjs && node --test tests/price.test.js tests/auth.test.js tests/settle.test.js"
+    "test": "node --test tests/price.test.js tests/auth.test.js tests/settle.test.js tests/orderState.test.js",
+    "check": "node tools/check.mjs && node --test tests/price.test.js tests/auth.test.js tests/settle.test.js tests/orderState.test.js"
   },
   "dependencies": {}
 }

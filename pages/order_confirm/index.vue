@@ -265,6 +265,10 @@ export default {
 				const order = await createOrder({
 					type: this.type,
 					goodsId: this.detail.id,
+					title: this.detail.title,
+					image: this.detail.images[0],
+					price: this.detail.price,
+					labor: this.detail.labor,
 					gram: this.gram,
 					mode: this.mode,
 					storeId: this.mode === 'pickup' ? this.storeId : '',

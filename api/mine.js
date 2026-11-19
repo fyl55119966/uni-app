@@ -1,4 +1,5 @@
 import { withMock } from './request.js'
+import { getUser } from '../utils/token.js'
 
 const USER = {
 	name: '用户3002',
@@ -34,5 +35,9 @@ const MENUS = [
 ]
 
 export function getMine() {
-	return withMock(() => ({ user: USER, orders: ORDERS, recycles: RECYCLES, menus: MENUS }), { url: '/mine' })
+	const stored = getUser() || {}
+	return withMock(
+		() => ({ user: { ...USER, ...stored }, orders: ORDERS, recycles: RECYCLES, menus: MENUS }),
+		{ url: '/mine' }
+	)
 }

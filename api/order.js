@@ -1,4 +1,5 @@
 import { withMock } from './request.js'
+import { nextOrderStatus, ORDER_STATUS } from '../utils/orderState.js'
 
 export const STORES = [
 	{ id: 'xian', name: '西安运营中心', manager: '王经理 151 3839 5854', address: '西安市未央区昆明路45号沣东吾悦广场', hours: '09:30–21:00' },
@@ -19,20 +20,77 @@ export const COUPONS = [
 
 export const SUBSIDY = { amount: 1000, status: '待领取' }
 
+const ORDERS_KEY = 'gold_orders'
+
+function readOrders() {
+	return uni.getStorageSync(ORDERS_KEY) || []
+}
+
+function saveOrders(list) {
+	uni.setStorageSync(ORDERS_KEY, list)
+}
+
 export function getCheckout() {
 	return withMock(() => ({ stores: STORES, addresses: ADDRESSES, coupons: COUPONS, subsidy: SUBSIDY }), {
 		url: '/order/checkout'
 	})
 }
 
-export function createOrder(payload) {
-	return withMock(
-		() => ({
-			orderNo: 'G' + Date.now(),
-			status: 'pending_deposit',
-			createdAt: Date.now(),
-			...payload
-		}),
-		{ url: '/order/create', method: 'POST', data: payload }
+export async function createOrder(payload) {
+	const order = {
+		orderNo: 'G' + Date.now(),
+		createdAt: Date.now(),
+		status: ORDER_STATUS.PENDING_DEPOSIT,
+		depositPaid: false,
+		balancePaid: false,
+		lastPayError: '',
+		payments: [],
+		...payload
+	}
+	const list = readOrders()
+	list.unshift(order)
+	saveOrders(list)
+	return order
+}
+
+export async function getOrders() {
+	return readOrders()
+}
+
+export async function getOrder(orderNo) {
+	return readOrders().find((o) => o.orderNo === orderNo) || null
+}
+
+function update(orderNo, event, payment) {
+	const list = readOrders()
+	const index = list.findIndex((o) => o.orderNo === orderNo)
+	if (index < 0) return null
+	const next = nextOrderStatus(list[index], event)
+	if (payment) next.payments = [...(next.payments || []), payment]
+	list[index] = next
+	saveOrders(list)
+	return next
+}
+
+export async function payOrder(orderNo, { method, stage }) {
+	const order = await getOrder(orderNo)
+	if (!order) return null
+	const success = stage === 'balance' ? 'PAY_BALANCE_SUCCESS' : 'PAY_DEPOSIT_SUCCESS'
+	return update(
+		orderNo,
+		{ type: success },
+		{ method, stage, amount: stage === 'balance' ? order.balance : order.deposit, at: Date.now(), status: 'success' }
 	)
+}
+
+export async function failOrder(orderNo, { method, stage, message }) {
+	return update(
+		orderNo,
+		{ type: 'PAY_FAIL', message },
+		{ method, stage, at: Date.now(), status: 'fail', message }
+	)
+}
+
+export async function timeoutOrder(orderNo) {
+	return update(orderNo, { type: 'PAY_TIMEOUT' })
 }

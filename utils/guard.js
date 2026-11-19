@@ -1,4 +1,4 @@
-import { getToken } from './token.js'
+import { getToken, getUser } from './token.js'
 import { isTradingNow } from './price.js'
 
 export function isLoggedIn() {
@@ -14,7 +14,7 @@ export function requireLogin(redirect = '/pages/home/index') {
 }
 
 export function hasRealname() {
-	const user = uni.getStorageSync('gold_user')
+	const user = getUser()
 	return Boolean(user && user.realname)
 }
 
