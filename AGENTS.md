@@ -6,6 +6,12 @@
 - 需求口径：`docs/需求确认单.md`
 - 页面与批次：`docs/页面清单与开发顺序.md`
 
+## 截图与素材
+
+- 页面截图：`images/页面/微信图片_*_NNN_772.png`（NNN 为页号）；OCR/取色结果在 `docs/screens/NNN.json`，重跑用 `tools/screen/batch.ps1`。
+- 设计素材：`images/图片/`。页面优先用这里的图，复制到 `static/images/gold/` 后引用。
+- 本地预览：`E:\HBuilderX\cli.exe open`，再 `launch web --project E:\ai-workspaces\uni-app`；H5 默认 `http://localhost:8080`。
+
 ## Agent skills
 
 ### Issue tracker
