@@ -13,4 +13,4 @@ jobs:
         with:
           node-version: 22
       - run: node tools/check.mjs
-      - run: node --test tests/price.test.js tests/auth.test.js tests/settle.test.js tests/orderState.test.js tests/recycle.test.js tests/auth.test.js
+      - run: node --test tests/price.test.js tests/auth.test.js tests/settle.test.js tests/orderState.test.js tests/recycle.test.js tests/withdraw.test.js tests/auth.test.js

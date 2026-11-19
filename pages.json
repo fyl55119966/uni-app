@@ -209,6 +209,38 @@
 				"navigationBarTextStyle": "black",
 				"backgroundColor": "#FAF7F0"
 			}
+		},
+		{
+			"path": "pages/bank/list/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/bank/add/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/wallet/withdraw/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/wallet/withdraw-records/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
 		}
 	],
 	"globalStyle": {

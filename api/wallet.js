@@ -79,3 +79,13 @@ export function syncRechargeStatus(id) {
 	}
 	return list
 }
+
+
+export function appendTransaction(tx) {
+	save([tx, ...getTransactions()])
+	return tx
+}
+
+export function setTransactionStatus(id, status) {
+	return save(getTransactions().map((t) => (t.id === id ? { ...t, status } : t)))
+}

@@ -95,7 +95,7 @@ export default {
 			uni.navigateTo({ url: '/pages/wallet/recharge/index' })
 		},
 		withdraw() {
-			uni.navigateTo({ url: '/pages/placeholder/index?title=' + encodeURIComponent('提现') + '&desc=' + encodeURIComponent('提现与银行卡在票 15 实现') })
+			uni.navigateTo({ url: '/pages/wallet/withdraw/index' })
 		}
 	}
 }
