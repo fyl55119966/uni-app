@@ -64,6 +64,14 @@
 				"navigationBarTextStyle": "black",
 				"backgroundColor": "#FAF7F0"
 			}
+		},
+		{
+			"path": "pages/cashier/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
 		}
 	],
 	"globalStyle": {
