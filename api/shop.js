@@ -7,7 +7,7 @@ const BANNERS = [
 	{ id: 2, image: '/static/images/gold/promo-invite.png', title: '邀请好友共享好礼', price: 17458.74, gold: 869.93, tag: '马上换' }
 ]
 
-const PRODUCTS = [
+export const PRODUCTS = [
 	{ id: 1, image: '/static/images/gold/products/p1.jpg', title: '福禄足金套链吊坠', sold: 12, fav: 0, gram: '16g', price: 15518.88, labor: 100 },
 	{ id: 2, image: '/static/images/gold/products/p2.jpg', title: '古法平安扣吊坠', sold: 12, fav: 0, gram: '18g', price: 17458.74, labor: 100 },
 	{ id: 3, image: '/static/images/gold/products/p3.jpg', title: '吉祥如意金锁吊坠', sold: 7, fav: 0, gram: '20g', price: 19398.4, labor: 100 },

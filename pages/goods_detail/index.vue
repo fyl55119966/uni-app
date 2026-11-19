@@ -99,6 +99,8 @@
 
 <script>
 import navBar from '@/components/nav-bar/index.vue'
+import { getFavorites, toggleFavorite } from '@/utils/favorite.js'
+import { isLoggedIn } from '@/utils/guard.js'
 import { getBar } from '@/api/coins.js'
 import { getProduct } from '@/api/shop.js'
 import { calcPrice, depositOf } from '@/utils/price.js'
@@ -162,7 +164,7 @@ export default {
 		this.type = query.type || 'bar'
 		this.id = query.id || ''
 		this.gram = Number(query.gram || 30)
-		this.favorites = uni.getStorageSync('gold_favorites') || []
+		this.favorites = getFavorites()
 		this.load()
 	},
 	methods: {
@@ -181,11 +183,13 @@ export default {
 			}
 		},
 		toggleFav() {
+			if (!isLoggedIn()) {
+				const q = this.type === 'bar' ? `type=bar&gram=${this.gram}` : `type=jewelry&id=${this.id}`
+				uni.navigateTo({ url: '/pages/login/index?redirect=' + encodeURIComponent('/pages/goods_detail/index?' + q) })
+				return
+			}
 			const key = String(this.detail.id)
-			this.favorites = this.favorites.includes(key)
-				? this.favorites.filter((id) => id !== key)
-				: [...this.favorites, key]
-			uni.setStorageSync('gold_favorites', this.favorites)
+			this.favorites = toggleFavorite(key)
 		},
 		openService() {
 			uni.navigateTo({ url: '/pages/placeholder/index?title=' + encodeURIComponent('联系客服') })

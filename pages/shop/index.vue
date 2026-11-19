@@ -5,6 +5,12 @@
 			<text class="top__title">小店</text>
 		</view>
 
+		<view class="search">
+			<image class="search__icon" src="/static/icons/ic-search.png" mode="aspectFit" />
+			<text class="search__text" @click="goSearch">搜索金条、手链、吊坠</text>
+			<text class="search__fav" @click="goFavorite">收藏</text>
+		</view>
+
 		<scroll-view class="banners" scroll-x :show-scrollbar="false">
 			<view class="banners__inner">
 				<view v-for="item in shop.banners" :key="item.id" class="banner" @click="open(item)">
@@ -85,12 +91,45 @@ export default {
 		},
 		open(item) {
 			uni.navigateTo({ url: `/pages/goods_detail/index?type=jewelry&id=${item.id}` })
+		},
+		goSearch() {
+			uni.navigateTo({ url: '/pages/search/index' })
+		},
+		goFavorite() {
+			uni.navigateTo({ url: '/pages/favorite/index' })
 		}
 	}
 }
 </script>
 
 <style lang="scss" scoped>
+.search {
+	display: flex;
+	align-items: center;
+	height: 72rpx;
+	margin: 0 24rpx 16rpx;
+	padding: 0 20rpx;
+	background: #fff;
+	border-radius: $gold-radius-pill;
+
+	&__icon {
+		width: 28rpx;
+		height: 28rpx;
+		margin-right: 12rpx;
+	}
+
+	&__text {
+		flex: 1;
+		font-size: 24rpx;
+		color: $gold-ink-300;
+	}
+
+	&__fav {
+		font-size: 24rpx;
+		color: $gold-600;
+	}
+}
+
 .page {
 	min-height: 100vh;
 	padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
