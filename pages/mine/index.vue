@@ -35,7 +35,7 @@
 		</view>
 
 		<view class="assets">
-			<view class="assets__cell">
+			<view class="assets__cell" @click="goWallet">
 				<text class="assets__num">¥{{ money(mine.user.balance) }}</text>
 				<text class="assets__label">余额</text>
 			</view>
@@ -159,6 +159,9 @@ export default {
 		},
 		openOrderEntry(item) {
 			uni.navigateTo({ url: `/pages/orders/index` })
+		},
+		goWallet() {
+			uni.navigateTo({ url: '/pages/wallet/index' })
 		},
 		goSettings() {
 			uni.navigateTo({ url: '/pages/settings/index' })
