@@ -1,13 +1,34 @@
-import { existsSync } from 'node:fs'
+﻿import { existsSync, readdirSync, statSync } from 'node:fs'
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 const ROOT = path.resolve(import.meta.dirname, '..')
 const SKIP_DIRS = new Set(['node_modules', 'unpackage', 'static', 'docs', 'images', '.git', '.scratch', '.hbuilderx'])
-const SCAN_DIRS = ['pages', 'components', 'api', 'utils']
+const SCAN_DIRS = ['components', 'api', 'utils']
 
 const errors = []
 const rel = (p) => path.relative(ROOT, p).replaceAll('\\', '/')
+
+// Windows 大小写不敏感、CI 是 Linux：逐段比对真实文件名
+function existsExact(relPath) {
+  const parts = relPath.split('/').filter(Boolean)
+  let cur = ROOT
+  for (const part of parts) {
+    let entries
+    try {
+      entries = readdirSync(cur)
+    } catch {
+      return false
+    }
+    if (!entries.includes(part)) return false
+    cur = path.join(cur, part)
+  }
+  try {
+    return statSync(cur).isFile()
+  } catch {
+    return false
+  }
+}
 
 async function walk(dir) {
   const out = []
@@ -34,12 +55,12 @@ try {
 const routes = [...(pages.pages || [])]
 for (const sub of pages.subPackages || []) {
   for (const page of sub.pages || []) {
-    routes.push({ path: `${sub.root}/${page.path}`, _sub: true })
+    routes.push({ path: `${sub.root}/${page.path}` })
   }
 }
 
 for (const route of routes) {
-  if (!existsSync(path.join(ROOT, `${route.path}.vue`))) {
+  if (!existsExact(`${route.path}.vue`)) {
     errors.push(`路由缺页面文件: ${route.path}.vue`)
   }
 }
@@ -48,15 +69,14 @@ for (const route of routes) {
 const files = []
 for (const route of routes) {
   const abs = path.join(ROOT, `${route.path}.vue`)
-  if (existsSync(abs)) files.push(abs)
+  if (existsExact(`${route.path}.vue`)) files.push(abs)
 }
-for (const dir of SCAN_DIRS.filter((d) => d !== 'pages')) {
+for (const dir of SCAN_DIRS) {
   const abs = path.join(ROOT, dir)
   if (existsSync(abs)) files.push(...(await walk(abs)))
 }
 for (const name of ['App.vue', 'main.js']) {
-  const abs = path.join(ROOT, name)
-  if (existsSync(abs)) files.push(abs)
+  if (existsExact(name)) files.push(path.join(ROOT, name))
 }
 
 let staticRefs = 0
@@ -66,8 +86,8 @@ for (const file of files) {
     const ref = match[1]
     if (ref.includes('${')) continue
     staticRefs++
-    if (!existsSync(path.join(ROOT, ref.slice(1)))) {
-      errors.push(`${rel(file)}: 静态资源不存在 ${ref}`)
+    if (!existsExact(ref.slice(1))) {
+      errors.push(`${rel(file)}: 静态资源不存在或大小写不一致 ${ref}`)
     }
   }
 }
@@ -83,7 +103,9 @@ for (const file of files.filter((f) => rel(f).startsWith('pages/'))) {
 console.log(`routes ${routes.length}, files ${files.length}, static refs ${staticRefs}`)
 if (errors.length) {
   console.error(`\n发现 ${errors.length} 个问题:`)
-  for (const error of errors) console.error(`- ${error}`)
+  for (const error of errors) { console.error(`- ${error}`); if (process.env.GITHUB_ACTIONS) console.error(`::error::${error}`) }
   process.exit(1)
 }
 console.log('check ok')
+
+

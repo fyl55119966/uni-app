@@ -12,4 +12,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm run check
+      - run: node --version && npm --version
+      - run: node tools/check.mjs
+      - run: node --test tests
