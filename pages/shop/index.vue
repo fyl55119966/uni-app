@@ -61,6 +61,7 @@ import pageFooter from '@/components/page-footer/index.vue'
 import gPrice from '@/components/g-price/index.vue'
 import gEmpty from '@/components/g-empty/index.vue'
 import { getShop } from '@/api/shop.js'
+import { allGoods } from '@/api/goods.js'
 
 export default {
 	components: { pageFooter, gPrice, gEmpty },
@@ -84,7 +85,8 @@ export default {
 	},
 	methods: {
 		async load() {
-			this.shop = await getShop()
+			const [shop, goods] = await Promise.all([getShop(), allGoods()])
+			this.shop = { ...shop, products: goods.filter((item) => item.type === 'jewelry') }
 		},
 		money(value) {
 			return Number(value || 0).toFixed(2)
