@@ -13,7 +13,7 @@ const HOME = {
 			subtitle: '实时金价 · 多规格可选',
 			image: '/static/images/gold/promo-gold.jpg',
 			overlay: true,
-			url: '/pages/coins/index'
+			target: 'coins'
 		},
 		{
 			key: 'invite',
@@ -21,7 +21,7 @@ const HOME = {
 			subtitle: '好友完成注册，双方均享好礼',
 			image: '/static/images/gold/promo-invite.png',
 			overlay: false,
-			url: ''
+			target: 'fans'
 		}
 	],
 	centers: [

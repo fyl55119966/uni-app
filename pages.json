@@ -5,7 +5,8 @@
 			"style": {
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
-				"backgroundColor": "#FAF7F0"
+				"backgroundColor": "#FAF7F0",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
@@ -34,6 +35,14 @@
 		},
 		{
 			"path": "pages/login/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0"
+			}
+		},
+		{
+			"path": "pages/placeholder/index",
 			"style": {
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",

@@ -26,12 +26,12 @@
 		<view class="section">
 			<view class="section__head">
 				<text class="section__title">全国运营中心</text>
-				<text class="section__more" @click="todo('运营中心列表')">查看全部 ›</text>
+				<text class="section__more" @click="openCenterList">查看全部 ›</text>
 			</view>
 			<swiper class="centers" :autoplay="true" :interval="5000" :circular="true" :indicator-dots="true"
 				indicator-color="rgba(217,161,51,.25)" indicator-active-color="#D9A133">
 				<swiper-item v-for="item in home.centers" :key="item.name">
-					<view class="center">
+					<view class="center" @click="openCenter(item)">
 						<view class="center__logo">
 							<image class="center__img" :src="home.brand.logo" mode="aspectFit" />
 						</view>
@@ -48,10 +48,10 @@
 		<view class="section section--wiki">
 			<view class="section__head">
 				<text class="section__title">百科知识</text>
-				<text class="section__more" @click="todo('百科')">查看全部 ›</text>
+				<text class="section__more" @click="openWikiList">查看全部 ›</text>
 			</view>
 
-			<view v-for="item in home.articles" :key="item.id" class="article" @click="todo('百科详情')">
+			<view v-for="item in home.articles" :key="item.id" class="article" @click="openArticle(item)">
 				<view class="article__title-row">
 					<text class="badge badge--q">问</text>
 					<text class="article__title">{{ item.title }}</text>
@@ -72,7 +72,7 @@
 
 		<view class="realname">
 			<text class="realname__text">完成实名认证或企业认证后才可进行交易</text>
-			<view class="realname__btn" @click="todo('实名认证')">去实名</view>
+			<view class="realname__btn" @click="openRealname">去实名</view>
 		</view>
 
 		<page-footer active="home" />
@@ -125,16 +125,38 @@ export default {
 	onShow() {
 		this.load()
 	},
+	async onPullDownRefresh() {
+		try {
+			await this.load()
+		} finally {
+			uni.stopPullDownRefresh()
+		}
+	},
 	methods: {
 		async load() {
 			this.home = await getHome()
 		},
 		openPromo(item) {
-			if (item.url) {
-				uni.reLaunch({ url: item.url })
-			} else {
-				this.todo('邀请好友')
-			}
+			if (item.target === 'coins') return uni.reLaunch({ url: '/pages/coins/index' })
+			if (item.target === 'fans') return this.placeholder('我的粉丝', '粉丝收益与邀请记录在票 19 实现')
+		},
+		openCenter(item) {
+			this.placeholder(item.name, item.address)
+		},
+		openCenterList() {
+			this.placeholder('全国运营中心', '运营中心列表在票 18 实现')
+		},
+		openWikiList() {
+			this.placeholder('黄金百科', '百科列表在票 18 实现')
+		},
+		openArticle(item) {
+			this.placeholder('百科详情', item.title)
+		},
+		openRealname() {
+			this.placeholder('实名认证', '个人/企业实名在票 12 实现')
+		},
+		placeholder(title, desc = '') {
+			uni.navigateTo({ url: `/pages/placeholder/index?title=${encodeURIComponent(title)}&desc=${encodeURIComponent(desc)}` })
 		},
 		closeSubsidy() {
 			this.showSubsidy = false
@@ -265,13 +287,13 @@ export default {
 }
 
 .promos {
-	height: 250rpx;
+	height: 190rpx;
 	margin: 94rpx $gold-page-pad 0;
 }
 
 .promo {
 	position: relative;
-	height: 230rpx;
+	height: 170rpx;
 	overflow: hidden;
 	background: $gold-cream-100;
 	border: 1rpx solid $gold-line;
