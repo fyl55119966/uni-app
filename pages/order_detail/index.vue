@@ -2,6 +2,12 @@
 	<view class="page">
 		<nav-bar title="订单详情" />
 
+		<view v-if="!order" class="missing">
+			<text class="missing__title">订单不存在或已删除</text>
+			<text class="missing__desc">请从「我的订购」重新进入</text>
+			<view class="missing__btn" @click="goOrders">返回我的订购</view>
+		</view>
+
 		<view v-if="order" class="status">
 			<text class="status__title">{{ statusText }}</text>
 			<text class="status__desc">{{ statusDesc }}</text>
@@ -102,6 +108,9 @@ export default {
 			const p = (n) => String(n).padStart(2, '0')
 			return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
 		},
+		goOrders() {
+			uni.reLaunch({ url: '/pages/orders/index' })
+		},
 		action() {
 			const stage = this.order.status === 'pending_deposit' ? 'deposit' : 'balance'
 			uni.navigateTo({ url: `/pages/cashier/index?orderNo=${this.orderNo}&stage=${stage}` })
@@ -115,6 +124,33 @@ export default {
 	min-height: 100vh;
 	padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
 	background: $gold-cream-50;
+}
+
+.missing {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 120rpx 40rpx;
+
+	&__title {
+		font-size: 30rpx;
+		color: $gold-ink-900;
+	}
+
+	&__desc {
+		margin-top: 12rpx;
+		font-size: 24rpx;
+		color: $gold-ink-400;
+	}
+
+	&__btn {
+		margin-top: 32rpx;
+		padding: 16rpx 56rpx;
+		background: $gold-gradient;
+		border-radius: $gold-radius-pill;
+		font-size: 26rpx;
+		color: #fff;
+	}
 }
 
 .status {

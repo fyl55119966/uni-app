@@ -82,6 +82,7 @@ export default {
 
 .tabs {
 	display: flex;
+	box-sizing: border-box;
 	white-space: nowrap;
 	padding: 0 20rpx;
 	background: #fff;

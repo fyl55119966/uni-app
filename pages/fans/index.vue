@@ -180,6 +180,7 @@ export default {
 
 .tabs {
 	display: flex;
+	box-sizing: border-box;
 	white-space: nowrap;
 	background: #fff;
 
