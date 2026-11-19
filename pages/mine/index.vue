@@ -64,7 +64,7 @@
 		<view class="block">
 			<view class="block__head">
 				<text class="block__title">我的订购</text>
-				<text class="block__more" @click="todo('全部订购')">全部订购 ›</text>
+				<text class="block__more" @click="goOrders">全部订购 ›</text>
 			</view>
 			<view class="block__grid">
 				<view v-for="item in mine.orders" :key="item.key" class="entry" @click="todo(item.label)">
@@ -146,6 +146,9 @@ export default {
 					}
 				}
 			})
+		},
+		goOrders() {
+			uni.navigateTo({ url: '/pages/orders/index' })
 		},
 		todo(name) {
 			uni.showToast({ title: name + '在后续票据实现', icon: 'none' })

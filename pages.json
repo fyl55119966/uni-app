@@ -80,6 +80,15 @@
 				"navigationBarTextStyle": "black",
 				"backgroundColor": "#FAF7F0"
 			}
+		},
+		{
+			"path": "pages/orders/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"backgroundColor": "#FAF7F0",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 	"globalStyle": {
