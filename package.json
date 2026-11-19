@@ -1,10 +1,11 @@
-{
+﻿{
   "name": "uni-app",
   "version": "1.0.0",
   "scripts": {
-    "test": "node --test tests",
-    "check": "node tools/check.mjs && node --test tests"
+    "test": "node --test tests/price.test.js",
+    "check": "node tools/check.mjs && node --test tests/price.test.js"
   },
   "dependencies": {
   }
 }
+

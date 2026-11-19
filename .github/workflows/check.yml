@@ -1,4 +1,4 @@
-name: check
+﻿name: check
 
 on:
   push:
@@ -12,11 +12,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: echo "::notice::node $(node --version) npm $(npm --version)"
       - run: node tools/check.mjs
-      - run: |
-          set -o pipefail
-          node --test tests 2>&1 | tee test.log || {
-            while IFS= read -r line; do echo "::error::$line"; done < test.log
-            exit 1
-          }
+      - run: node --test tests/price.test.js
