@@ -64,7 +64,7 @@
 				<text class="agree__link" @click.stop="showAgreement">《用户协议隐私政策》</text>
 			</view>
 
-			<g-button class="login-submit" block :loading="submitting" :text="mode === 'login' ? '登录' : '注册'"
+			<g-button class="login-submit" block size="lg" :loading="submitting" :text="mode === 'login' ? '登录' : '注册'"
 				@click="submit" />
 		</view>
 
@@ -241,7 +241,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 40rpx 0 0;
+	padding: 57rpx 0 0;
 
 	&__logo {
 		display: flex;
@@ -305,7 +305,7 @@ export default {
 }
 
 .form {
-	padding: 71rpx 48rpx 0;
+	padding: 71rpx 59rpx 0;
 }
 
 .field {
@@ -313,7 +313,7 @@ export default {
 	align-items: center;
 	height: 96rpx;
 	margin-bottom: 26rpx;
-	padding: 0 28rpx;
+	padding: 0 23rpx;
 	background: #fff;
 	border: 1rpx solid $gold-line;
 	border-radius: $gold-radius;
@@ -341,7 +341,7 @@ export default {
 
 	&__hint {
 		display: block;
-		margin: -14rpx 0 24rpx 4rpx;
+		margin: 28rpx 0 24rpx 4rpx;
 		font-size: 22rpx;
 		color: $gold-ink-300;
 	}
@@ -422,7 +422,7 @@ export default {
 }
 
 .login-submit {
-	margin-top: 36rpx;
+	margin-top: 45rpx;
 }
 
 .submit {
@@ -444,7 +444,7 @@ export default {
 .other {
 	display: flex;
 	align-items: center;
-	padding: 61rpx 84rpx 0;
+	padding: 53rpx 84rpx 0;
 
 	&__divider {
 		flex: 1;
@@ -461,7 +461,7 @@ export default {
 	&__icons {
 		display: flex;
 		justify-content: center;
-		margin-top: 52rpx;
+		margin-top: 47rpx;
 	}
 
 	&__icon {
@@ -477,8 +477,8 @@ export default {
 	}
 
 	&__img {
-		width: 44rpx;
-		height: 44rpx;
+		width: 38rpx;
+		height: 38rpx;
 	}
 }
 </style>

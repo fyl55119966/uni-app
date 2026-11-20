@@ -60,6 +60,11 @@ export default {
 		font-size: 24rpx;
 	}
 
+	&--lg {
+		height: 96rpx;
+		font-size: 30rpx;
+	}
+
 	&--ghost {
 		background: transparent;
 		border: 2rpx solid $gold-400;
