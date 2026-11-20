@@ -5,6 +5,7 @@
 - 产品规格：`docs/SPEC.md`
 - 需求口径：`docs/需求确认单.md`
 - 页面与批次：`docs/页面清单与开发顺序.md`
+- 交接说明：`docs/HANDOFF.md`
 
 ## 截图与素材
 
