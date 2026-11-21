@@ -7,6 +7,7 @@ const SVG_DIR = path.join(ROOT, 'design/icons')
 const PNG_DIR = path.join(ROOT, 'static/icons')
 const GOLD = '#D9A133'
 const GRAY = '#8A8A8A'
+const GOLD_SOFT = '#D8B36B'
 
 const svg = (body, color) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="324" height="324" viewBox="0 0 81 81" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`
@@ -37,6 +38,7 @@ const mStar = `<path d="M40.5 12 L49 31 L70 33 L54 47 L59 67 L40.5 56 L22 67 L27
 const mTicket = `<path d="M12 26 H69 V38 A6 6 0 0 0 69 50 V62 H12 V50 A6 6 0 0 0 12 38 Z"/><path d="M30 26 V62" stroke-dasharray="4 6"/>`
 const mCard = `<rect x="10" y="22" width="61" height="40" rx="6"/><path d="M10 34 H71"/><path d="M20 50 H36"/>`
 const mInvoice = `<path d="M18 12 H63 V69 L56 63 L49 69 L42 63 L35 69 L28 63 L21 69 L18 66 Z"/><path d="M28 28 H53"/><path d="M28 40 H53"/><path d="M28 52 H44"/>`
+const icEmptyBox = `<path d="M38.2 3.8 L70.6 20 L70.6 61.4 L39.1 77.6 L6.7 61.4 L6.7 20 Z"/><path d="M6.7 20 L39.1 36.2 L70.6 20"/><path d="M39.1 36.2 V77.6"/><path d="M56 12.7 L21.1 27.2"/><path d="M14.8 38 L27.4 45.2"/>`
 
 const icons = [
   { name: 'tab-home', color: GRAY, body: home },
@@ -67,7 +69,8 @@ const icons = [
   { name: 'm-star', color: GOLD, body: mStar },
   { name: 'm-ticket', color: GOLD, body: mTicket },
   { name: 'm-card', color: GOLD, body: mCard },
-  { name: 'm-invoice', color: GOLD, body: mInvoice }
+  { name: 'm-invoice', color: GOLD, body: mInvoice },
+  { name: 'ic-empty-box', color: GOLD_SOFT, body: icEmptyBox, size: 324 }
 ]
 
 await mkdir(SVG_DIR, { recursive: true })
@@ -75,9 +78,10 @@ await mkdir(PNG_DIR, { recursive: true })
 
 for (const icon of icons) {
   const source = svg(icon.body, icon.color)
+  const size = icon.size || 81
   await writeFile(path.join(SVG_DIR, `${icon.name}.svg`), source)
   await sharp(Buffer.from(source))
-    .resize(81, 81)
+    .resize(size, size)
     .png({ compressionLevel: 9 })
     .toFile(path.join(PNG_DIR, `${icon.name}.png`))
 }

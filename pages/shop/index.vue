@@ -7,10 +7,10 @@
 
 		<view class="banners">
 			<image class="banners__bg" src="/static/images/gold/shop-top.jpg" mode="aspectFill" />
-			<scroll-view class="banners__scroll" scroll-x :show-scrollbar="false" :scroll-left="bannerScrollLeft"
-				@scroll="onBannerScroll">
-				<view class="banners__inner">
-					<view v-for="(item, index) in loopBanners" :key="index" class="banner" @click="open(item)">
+			<swiper v-if="banners.length" :key="active" class="banners__swiper" :circular="banners.length > 1"
+				previous-margin="151rpx" next-margin="151rpx" :duration="300">
+				<swiper-item v-for="item in banners" :key="item.id">
+					<view class="banner" @click="open(item)">
 						<image class="banner__img" :src="item.image" mode="aspectFill" />
 						<view class="banner__info">
 							<text class="banner__title">{{ item.title }}</text>
@@ -22,9 +22,9 @@
 						</view>
 						<view class="banner__tag">{{ item.tag }}</view>
 					</view>
-				</view>
-			</scroll-view>
-			<view class="banners__hint">
+				</swiper-item>
+			</swiper>
+			<view v-if="banners.length" class="banners__hint">
 				<text v-for="(char, index) in hintChars" :key="index" class="banners__hint-char">{{ char }}</text>
 			</view>
 		</view>
@@ -37,7 +37,8 @@
 			</view>
 		</view>
 
-		<g-empty v-if="!filtered.length" text="暂无商品" desc="换个分类看看" />
+		<g-empty v-if="!filtered.length" icon="/static/icons/ic-empty-box.png" text-color="#C9AD7D"
+			text="该分类暂无上架商品" />
 		<view v-else class="grid">
 			<view v-for="item in filtered" :key="item.id" class="card" @click="open(item)">
 				<view class="card__media">
@@ -72,15 +73,17 @@ export default {
 		return {
 			gold: '869.93',
 			hintChars: '左右滑动查看更多'.split(''),
-			loopBanners: [],
-			bannerScrollLeft: 0,
-			bannerSetWidth: 0,
-			bannerResetting: false,
 			active: 0,
 			shop: { categories: [], banners: [], products: [] }
 		}
 	},
 	computed: {
+		banners() {
+			const list = this.shop.banners || []
+			if (this.active === 0) return list
+			const category = this.shop.categories[this.active]
+			return list.filter((item) => item.category === category)
+		},
 		filtered() {
 			if (this.active === 0) return this.shop.products
 			const category = this.shop.categories[this.active]
@@ -94,38 +97,6 @@ export default {
 		async load() {
 			const [shop, goods] = await Promise.all([getShop(), allGoods()])
 			this.shop = { ...shop, products: goods.filter((item) => item.type === 'jewelry') }
-			this.initBannerLoop()
-		},
-		initBannerLoop() {
-			const list = this.shop.banners || []
-			if (!list.length || this.loopBanners.length) return
-			this.loopBanners = [...list, ...list, ...list]
-			this.bannerSetWidth = uni.upx2px((436 + 16) * list.length)
-			this.$nextTick(() => {
-				this.bannerResetting = true
-				this.bannerScrollLeft = this.bannerSetWidth
-				setTimeout(() => {
-					this.bannerResetting = false
-				}, 80)
-			})
-		},
-		onBannerScroll(e) {
-			if (this.bannerResetting) return
-			const setWidth = this.bannerSetWidth
-			if (!setWidth) return
-			const scrollLeft = e.detail.scrollLeft
-			if (scrollLeft < setWidth * 0.5) {
-				this.jumpBanner(scrollLeft + setWidth)
-			} else if (scrollLeft > setWidth * 2.5) {
-				this.jumpBanner(scrollLeft - setWidth)
-			}
-		},
-		jumpBanner(left) {
-			this.bannerResetting = true
-			this.bannerScrollLeft = Math.round(left)
-			setTimeout(() => {
-				this.bannerResetting = false
-			}, 60)
 		},
 		money(value) {
 			return Number(value || 0).toFixed(2)
@@ -196,16 +167,11 @@ export default {
 		height: 100%;
 	}
 
-	&__scroll {
+	&__swiper {
 		position: relative;
 		z-index: 1;
-		height: 100%;
-		white-space: nowrap;
-	}
-
-	&__inner {
-		display: inline-flex;
-		padding: 128rpx 24rpx 0;
+		height: 424rpx;
+		margin-top: 128rpx;
 	}
 
 	&__hint {
@@ -233,10 +199,9 @@ export default {
 
 .banner {
 	position: relative;
-	flex: none;
 	width: 436rpx;
 	height: 424rpx;
-	margin-right: 16rpx;
+	margin: 0 auto;
 	padding: 8rpx;
 	overflow: hidden;
 	border-radius: $gold-radius;

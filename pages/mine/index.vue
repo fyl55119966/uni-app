@@ -1,12 +1,19 @@
 <template>
 	<view class="page">
 		<view class="top">
-			<view class="top__left">
-				<text class="top__ico" @click="goSettings">⚙</text>
-				<text class="top__ico" @click="goMessages">🔔</text>
+			<view class="top__bar">
+				<text class="top__title">我的</text>
 			</view>
-			<text class="top__title">我的</text>
-			<view class="top__kf" @click="placeholder('联系客服', '在线客服在票 19 实现')">联系客服</view>
+			<view class="top__sub">
+				<view class="top__left">
+					<image class="top__ico" src="/static/icons/mine-gear.png" mode="aspectFit" @click="goSettings" />
+					<image class="top__ico" src="/static/icons/mine-bell.png" mode="aspectFit" @click="goMessages" />
+				</view>
+				<view class="top__kf" @click="placeholder('联系客服', '在线客服在票 19 实现')">
+					<image class="top__kf-ico" src="/static/icons/mine-headset.png" mode="aspectFit" />
+					<text>联系客服</text>
+				</view>
+			</view>
 		</view>
 
 		<view v-if="!logged" class="login-card" @click="goLogin">
@@ -29,7 +36,7 @@
 				</view>
 			</view>
 			<view class="profile__qr" @click="placeholder('粉丝收益', '粉丝收益在票 19 实现')">
-				<image class="profile__qr-img" src="/static/images/gold/qr.png" mode="aspectFit" />
+				<image class="profile__qr-img" src="/static/icons/mine-qr.png" mode="aspectFit" />
 				<text class="profile__qr-text">邀请有礼 ›</text>
 			</view>
 		</view>
@@ -55,11 +62,11 @@
 				</view>
 				<text class="subsidy__tip">抵扣预定金10%，提货抵扣工费</text>
 			</view>
-			<view class="subsidy__btn" @click="openMenu({ key: 'subsidy', label: '平台补贴' })">去领取 ›</view>
+			<view class="subsidy__btn" @click="openMenu({ key: 'subsidy', label: '平台补贴' })">去领取</view>
 		</view>
 
 		<view class="fans-card" @click="uni.navigateTo({ url: '/pages/fans/index' })">
-			<image class="fans-card__icon" src="/static/images/gold/invite-coin.png" mode="aspectFit" />
+			<image class="fans-card__icon" src="/static/images/gold/fans-envelope.png" mode="aspectFit" />
 			<view class="fans-card__body">
 				<view class="fans-card__title-row">
 					<text class="fans-card__title">粉丝收益</text>
@@ -100,14 +107,15 @@
 
 		<view class="menu">
 			<g-cell v-for="item in mine.menus" :key="item.key" :label="item.label" :icon="item.icon"
-				@click="todo(item.label)" />
+				:border="false" @click="todo(item.label)" />
 		</view>
 
 		<view class="logout" @click="logout">退出登录</view>
 		</template>
 
 		<view class="fab" @click="placeholder('在线客服', '在线客服在票 19 实现')">
-			<image class="fab__img" src="/static/images/gold/kf.png" mode="aspectFit" />
+			<image class="fab__img" src="/static/icons/mine-fab-headset.png" mode="aspectFit" />
+			<text class="fab__text">客服</text>
 		</view>
 
 		<page-footer active="mine" />
@@ -302,28 +310,36 @@ export default {
 .page {
 	min-height: 100vh;
 	padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
-	background: $gold-cream-50;
+	background: linear-gradient(180deg, #FFF6E1 0rpx, #FBF8EA 460rpx, #F3F1EB 1100rpx, #F3F1EB 100%);
 }
 
 .top {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: calc(88rpx + var(--status-bar-height));
 	padding-top: var(--status-bar-height);
 
-	&__left {
-		position: absolute;
-		left: 28rpx;
-		bottom: 16rpx;
+	&__bar {
 		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 88rpx;
+	}
+
+	&__sub {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 76rpx;
+		padding: 0 28rpx;
+	}
+
+	&__left {
+		display: flex;
+		align-items: center;
 	}
 
 	&__ico {
-		margin-right: 28rpx;
-		font-size: 32rpx;
-		color: $gold-600;
+		width: 38rpx;
+		height: 38rpx;
+		margin-right: 30rpx;
 	}
 
 	&__title {
@@ -333,15 +349,20 @@ export default {
 	}
 
 	&__kf {
-		position: absolute;
-		right: 28rpx;
-		bottom: 14rpx;
+		display: flex;
+		align-items: center;
 		padding: 10rpx 22rpx;
 		background: #fff;
 		border: 1rpx solid $gold-line;
 		border-radius: $gold-radius-pill;
 		font-size: 22rpx;
 		color: $gold-ink-800;
+	}
+
+	&__kf-ico {
+		width: 26rpx;
+		height: 26rpx;
+		margin-right: 8rpx;
 	}
 }
 
@@ -392,9 +413,8 @@ export default {
 	}
 
 	&__qr-img {
-		width: 92rpx;
-		height: 92rpx;
-		border-radius: 12rpx;
+		width: 72rpx;
+		height: 72rpx;
 	}
 
 	&__qr-text {
@@ -443,7 +463,7 @@ export default {
 	align-items: center;
 	margin: 20rpx 30rpx 0;
 	padding: 24rpx 26rpx;
-	background: linear-gradient(90deg, #FFF3D6 0%, #FFE9BC 100%);
+	background: linear-gradient(90deg, #FFF6E2 0%, #FFF0CF 100%);
 	border: 1rpx solid #F2D9A0;
 	border-radius: $gold-radius-lg;
 
@@ -459,13 +479,16 @@ export default {
 	&__title {
 		font-size: 28rpx;
 		font-weight: 700;
-		color: #6B4700;
+		color: #373635;
 	}
 
 	&__tag {
 		margin-left: 10rpx;
+		padding: 3rpx 12rpx;
+		background: #F5DFAF;
+		border-radius: $gold-radius-pill;
 		font-size: 20rpx;
-		color: #A87820;
+		color: #8A6A20;
 	}
 
 	&__amount {
@@ -598,32 +621,13 @@ export default {
 	padding: 0 30rpx;
 	background: #fff;
 
-	&__row {
-		display: flex;
-		align-items: center;
-		height: 104rpx;
-		border-bottom: 1rpx solid $gold-line;
-
-		&:last-child {
-			border-bottom: none;
-		}
+	::v-deep .cell {
+		min-height: 88rpx;
 	}
 
-	&__icon {
-		width: 44rpx;
-		height: 44rpx;
-	}
-
-	&__label {
-		flex: 1;
-		margin-left: 18rpx;
-		font-size: 28rpx;
-		color: $gold-ink-800;
-	}
-
-	&__arrow {
-		font-size: 30rpx;
-		color: $gold-ink-300;
+	::v-deep .cell__icon {
+		width: 34rpx;
+		height: 34rpx;
 	}
 }
 
@@ -633,7 +637,7 @@ export default {
 	justify-content: center;
 	height: 96rpx;
 	margin: 24rpx 30rpx 0;
-	background: #FFF3D6;
+	background: #FFF6E1;
 	border: 1rpx solid #F2D9A0;
 	border-radius: $gold-radius;
 	font-size: 28rpx;
@@ -642,21 +646,28 @@ export default {
 
 .fab {
 	position: fixed;
-	right: 26rpx;
-	bottom: calc(180rpx + env(safe-area-inset-bottom));
+	right: 20rpx;
+	bottom: calc(300rpx + env(safe-area-inset-bottom));
 	z-index: 99;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	width: 92rpx;
-	height: 92rpx;
-	background: #6B6257;
+	width: 102rpx;
+	height: 102rpx;
+	background: #5F5F5F;
 	border-radius: 50%;
 	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.18);
 
 	&__img {
-		width: 60rpx;
-		height: 60rpx;
+		width: 44rpx;
+		height: 40rpx;
+	}
+
+	&__text {
+		margin-top: 2rpx;
+		font-size: 20rpx;
+		color: #E3D3A3;
 	}
 }
 </style>

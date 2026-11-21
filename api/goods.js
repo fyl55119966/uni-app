@@ -3,31 +3,13 @@ import { getBar } from './coins.js'
 
 export const BAR_GRAMS = [1, 5, 15, 30, 100]
 
-const JEWELRY_CATEGORY = {
-	1: '黄金饰品',
-	2: '黄金饰品',
-	3: '黄金饰品',
-	4: '黄金饰品',
-	11: '黄金饰品',
-	12: '黄金饰品',
-	13: '黄金饰品',
-	14: '黄金饰品',
-	5: '白银饰品',
-	6: '白银饰品',
-	7: '白银饰品',
-	8: '白银饰品',
-	9: '白银饰品',
-	10: '白银饰品'
-}
-
 export const CATEGORIES = ['投资金条', '黄金饰品', '白银饰品', '翡翠饰品']
 
 export async function allGoods() {
 	const bars = await Promise.all(BAR_GRAMS.map((gram) => getBar(gram)))
 	const jewelry = PRODUCTS.map((item) => ({
 		...item,
-		type: 'jewelry',
-		category: JEWELRY_CATEGORY[item.id] || '黄金饰品'
+		type: 'jewelry'
 	}))
 	return [
 		...bars.map((bar) => ({ ...bar, category: '投资金条' })),
@@ -54,5 +36,5 @@ export async function getGoodsById(id) {
 	}
 	const { getProduct } = await import('./shop.js')
 	const item = await getProduct(id)
-	return item ? { ...item, category: JEWELRY_CATEGORY[item.id] || '黄金饰品' } : null
+	return item
 }

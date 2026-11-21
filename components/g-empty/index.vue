@@ -1,9 +1,10 @@
 <template>
 	<view class="empty">
-		<view class="empty__ring">
+		<image v-if="icon" class="empty__icon" :src="icon" mode="aspectFit" />
+		<view v-else class="empty__ring">
 			<text class="empty__mark">空</text>
 		</view>
-		<text class="empty__text">{{ text }}</text>
+		<text class="empty__text" :style="textStyle">{{ text }}</text>
 		<text v-if="desc" class="empty__desc">{{ desc }}</text>
 		<view v-if="actionText" class="empty__action" @click="$emit('action')">{{ actionText }}</view>
 	</view>
@@ -15,7 +16,14 @@ export default {
 	props: {
 		text: { type: String, default: '暂无数据' },
 		desc: { type: String, default: '' },
-		actionText: { type: String, default: '' }
+		actionText: { type: String, default: '' },
+		icon: { type: String, default: '' },
+		textColor: { type: String, default: '' }
+	},
+	computed: {
+		textStyle() {
+			return this.textColor ? `color:${this.textColor};` : ''
+		}
 	}
 }
 </script>
@@ -26,6 +34,11 @@ export default {
 	flex-direction: column;
 	align-items: center;
 	padding: 100rpx 0;
+
+	&__icon {
+		width: 64rpx;
+		height: 64rpx;
+	}
 
 	&__ring {
 		display: flex;
