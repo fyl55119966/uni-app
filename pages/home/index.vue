@@ -10,7 +10,7 @@
 			</view>
 		</view>
 
-		<swiper class="promos" :indicator-dots="true" indicator-color="rgba(255,255,255,.5)"
+		<swiper class="promos" :indicator-dots="true" indicator-color="rgba(90,53,8,.28)"
 			indicator-active-color="#D9A133" :autoplay="true" :interval="4000" :circular="true">
 			<swiper-item v-for="item in home.promos" :key="item.key">
 				<view class="promo" @click="openPromo(item)">
@@ -28,12 +28,13 @@
 				<text class="section__title">全国运营中心</text>
 				<text class="section__more" @click="openCenterList">查看全部 ›</text>
 			</view>
-			<swiper class="centers" :autoplay="true" :interval="5000" :circular="true" :indicator-dots="true"
-				indicator-color="rgba(217,161,51,.25)" indicator-active-color="#D9A133">
+			<swiper class="centers" :autoplay="true" :interval="5000" :circular="true">
 				<swiper-item v-for="item in home.centers" :key="item.name">
 					<view class="center" @click="openCenter(item)">
 						<view class="center__logo">
-							<image class="center__img" :src="home.brand.logo" mode="aspectFit" />
+							<view class="center__logo-inner">
+								<image class="center__img" :src="home.brand.logo" mode="aspectFit" />
+							</view>
 						</view>
 						<view class="center__body">
 							<text class="center__name">{{ item.name }}</text>
@@ -63,14 +64,14 @@
 				<view class="article__meta">
 					<text class="article__source">{{ item.source }}</text>
 					<text class="article__date">{{ item.date }}</text>
-					<text class="article__views">◎ {{ item.views }}人浏览</text>
+					<view class="article__views"><text class="iconfont icon-liulan article__eye" /><text>{{ item.views }}人浏览</text></view>
 				</view>
 			</view>
 		</view>
 
 		<view class="hold" />
 
-		<view class="realname">
+		<view v-if="showRealname" class="realname">
 			<text class="realname__text">完成实名认证或企业认证后才可进行交易</text>
 			<view class="realname__btn" @click="openRealname">去实名</view>
 		</view>
@@ -94,6 +95,7 @@
 <script>
 import pageFooter from '@/components/page-footer/index.vue'
 import { getHome } from '@/api/home.js'
+import { getToken, getUser } from '@/utils/token.js'
 
 const EMPTY = {
 	brand: { name: '上金所有金店', en: 'Shangjin Gold Stores', logo: '/static/images/gold/logo.png' },
@@ -110,7 +112,8 @@ export default {
 	data() {
 		return {
 			home: EMPTY,
-			showSubsidy: false
+			showSubsidy: false,
+			showRealname: false
 		}
 	},
 	computed: {
@@ -119,6 +122,10 @@ export default {
 		}
 	},
 	onLoad(options) {
+		if (!getToken()) {
+			uni.reLaunch({ url: '/pages/login/index?redirect=' + encodeURIComponent('/pages/home/index') })
+			return
+		}
 		if (options && options.nosubsidy) return
 		if (!uni.getStorageSync('gold_subsidy_seen')) this.showSubsidy = true
 	},
@@ -135,6 +142,8 @@ export default {
 	methods: {
 		async load() {
 			this.home = await getHome()
+			const user = getUser()
+			this.showRealname = Boolean(getToken() && user && !user.realname)
 		},
 		openPromo(item) {
 			if (item.target === 'coins') return uni.reLaunch({ url: '/pages/coins/index' })
@@ -176,7 +185,7 @@ export default {
 <style lang="scss" scoped>
 .page {
 	min-height: 100vh;
-	padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
+	padding-bottom: calc(10px + 200rpx);
 	background: $gold-cream-50;
 }
 
@@ -287,13 +296,13 @@ export default {
 }
 
 .promos {
-	height: 190rpx;
-	margin: 94rpx $gold-page-pad 0;
+	height: 220rpx;
+	margin: 20rpx $gold-page-pad 0;
 }
 
 .promo {
 	position: relative;
-	height: 170rpx;
+	height: 220rpx;
 	overflow: hidden;
 	background: $gold-cream-100;
 	border: 1rpx solid $gold-line;
@@ -325,8 +334,35 @@ export default {
 	}
 }
 
+/* #ifdef H5 */
+.promos,
+.promo {
+	height: auto;
+	aspect-ratio: 3 / 1;
+}
+
+.promo {
+	container-type: inline-size;
+
+	&__text {
+		left: 5.8cqw;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	&__title {
+		font-size: 4.93cqw;
+	}
+
+	&__sub {
+		margin-top: 1.45cqw;
+		font-size: 3.19cqw;
+	}
+}
+/* #endif */
+
 .section {
-	margin: 32rpx $gold-page-pad 0;
+	margin: 24rpx $gold-page-pad 0;
 
 	&--wiki {
 		margin-top: 68rpx;
@@ -336,48 +372,58 @@ export default {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 34rpx;
+		margin-bottom: 20rpx;
 	}
 
 	&__title {
-		font-size: 34rpx;
+		font-size: 36rpx;
 		font-weight: 700;
 		color: $gold-ink-900;
 	}
 
 	&__more {
-		font-size: 24rpx;
+		font-size: 28rpx;
 		color: $gold-ink-400;
 	}
 }
 
 .centers {
-	height: 230rpx;
+	height: 250rpx;
 }
 
 .center {
 	display: flex;
 	align-items: center;
-	height: 210rpx;
+	height: 250rpx;
 	padding: 0 28rpx;
 	background: #fff;
-	border: 1rpx solid $gold-line;
 	border-radius: $gold-radius-lg;
 
 	&__logo {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 104rpx;
-		height: 104rpx;
+		width: 140rpx;
+		height: 140rpx;
 		margin-right: 24rpx;
-		border: 2rpx solid $gold-200;
+		background: #fff;
+		border: 2rpx solid $gold-600;
+		border-radius: 50%;
+	}
+
+	&__logo-inner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 134rpx;
+		height: 134rpx;
+		overflow: hidden;
 		border-radius: 50%;
 	}
 
 	&__img {
-		width: 64rpx;
-		height: 64rpx;
+		width: 140rpx;
+		height: 140rpx;
 	}
 
 	&__body {
@@ -387,21 +433,21 @@ export default {
 	}
 
 	&__name {
-		font-size: 30rpx;
+		font-size: 34rpx;
 		font-weight: 700;
 		color: $gold-ink-900;
 	}
 
 	&__manager {
 		margin-top: 8rpx;
-		font-size: 24rpx;
+		font-size: 28rpx;
 		color: $gold-ink-500;
 	}
 
 	&__addr {
 		margin-top: 6rpx;
-		font-size: 22rpx;
-		line-height: 32rpx;
+		font-size: 26rpx;
+		line-height: 36rpx;
 		color: $gold-ink-400;
 	}
 }
@@ -410,8 +456,7 @@ export default {
 	margin-bottom: 20rpx;
 	padding: 28rpx;
 	background: #fff;
-	border: 1rpx solid $gold-line;
-	border-radius: $gold-radius-lg;
+	border-radius: 0;
 
 	&__title-row,
 	&__excerpt-row {
@@ -424,37 +469,66 @@ export default {
 
 	&__title {
 		flex: 1;
-		font-size: 28rpx;
-		font-weight: 600;
-		line-height: 40rpx;
+		display: block;
+		min-width: 0;
+		overflow: hidden;
+		font-size: 30rpx;
+		font-weight: 700;
+		line-height: 42rpx;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 		color: $gold-ink-900;
 	}
 
 	&__excerpt {
 		flex: 1;
-		font-size: 24rpx;
-		line-height: 36rpx;
+		display: -webkit-box;
+		min-width: 0;
+		height: 76rpx;
+		overflow: hidden;
+		font-size: 26rpx;
+		line-height: 38rpx;
 		color: $gold-ink-500;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
 	}
 
 	&__meta {
+		position: relative;
 		display: flex;
 		align-items: center;
-		margin-top: 18rpx;
-		font-size: 20rpx;
+		justify-content: space-between;
+		margin-top: 30rpx;
+		padding-top: 30rpx;
+		border-top: 1rpx solid $gold-line;
+		font-size: 26rpx;
+		line-height: 36rpx;
 		color: $gold-ink-300;
 	}
 
 	&__source {
-		margin-right: 24rpx;
+		white-space: nowrap;
 	}
 
 	&__date {
-		margin-right: 24rpx;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		white-space: nowrap;
 	}
 
 	&__views {
+		display: flex;
+		align-items: center;
 		margin-left: auto;
+		white-space: nowrap;
+	}
+
+	&__eye {
+		margin-right: 6rpx;
+		font-size: 26rpx;
+		line-height: 1;
+		color: $gold-ink-300;
 	}
 }
 
@@ -462,19 +536,20 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
-	margin: 4rpx 10rpx 0 0;
-	border-radius: 6rpx;
-	font-size: 20rpx;
+	flex-shrink: 0;
+	width: 36rpx;
+	height: 36rpx;
+	margin: 2rpx 10rpx 0 0;
+	border-radius: 8rpx;
+	font-size: 22rpx;
 	color: #fff;
 
 	&--q {
-		background: $gold-600;
+		background: #FFCC38;
 	}
 
 	&--a {
-		background: #2FA36B;
+		background: #58D4B2;
 	}
 }
 
@@ -486,7 +561,7 @@ export default {
 	position: fixed;
 	left: 0;
 	right: 0;
-	bottom: calc(154rpx + env(safe-area-inset-bottom));
+	bottom: calc(10px + 108rpx);
 	z-index: 98;
 	display: flex;
 	align-items: center;

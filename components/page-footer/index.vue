@@ -48,50 +48,50 @@ export default {
 	position: fixed;
 	left: 0;
 	right: 0;
-	bottom: 0;
+	bottom: 10px;
 	z-index: 99;
-	padding: 0 $gold-page-pad calc(12rpx + env(safe-area-inset-bottom));
-	padding-bottom: calc(12rpx + constant(safe-area-inset-bottom));
+	background: #fff;
+	border-radius: $gold-radius-pill;
 }
 
 .footer__bar {
 	display: flex;
-	height: 112rpx;
-	background: rgba(255, 255, 255, 0.96);
-	border: 1rpx solid $gold-line;
-	border-radius: $gold-radius-pill;
-	box-shadow: 0 8rpx 24rpx rgba(31, 31, 31, 0.08);
+	height: 100rpx;
 }
 
 .footer__item {
+	position: relative;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	margin: 8rpx;
+	margin: 0rpx 12rpx 12rpx 0rpx;
 	border: 1rpx solid transparent;
 	border-radius: $gold-radius-pill;
 
 	&--active {
-		background: $gold-100;
-		border-color: $gold-200;
+		border-color: #f8e2a4;
+		background: #fff9e4;
 	}
 }
 
 .footer__icon {
-	width: 40rpx;
-	height: 40rpx;
+	position: relative;
+	width: 34rpx;
+	height: 34rpx;
 }
 
 .footer__label {
-	margin-top: 4rpx;
-	font-size: 20rpx;
-	line-height: 28rpx;
-	color: $gold-ink-400;
+	position: relative;
+	margin-top: 6rpx;
+	font-size: 28rpx;
+	font-weight: 400;
+	line-height: 30rpx;
+	color: #303030;
 
 	.footer__item--active & {
-		color: $gold-600;
+		color: #8e641b;
 		font-weight: 600;
 	}
 }

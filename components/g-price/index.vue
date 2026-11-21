@@ -1,5 +1,5 @@
 <template>
-	<text class="price" :class="[`price--${size}`, { 'price--bold': bold }]" :style="{ color }">
+	<text class="price" :class="[`price--${size}`, { 'price--bold': bold }]" :style="{ color, fontSize }">
 		<text class="price__sign">¥</text>
 		<text class="price__int">{{ parts.int }}</text>
 		<text class="price__dec">.{{ parts.dec }}</text>
@@ -14,6 +14,7 @@ export default {
 		value: { type: [Number, String], default: 0 },
 		size: { type: String, default: 'md' },
 		color: { type: String, default: '#D9A133' },
+		fontSize: { type: String, default: '' },
 		unit: { type: String, default: '' },
 		bold: { type: Boolean, default: true }
 	},

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App'
+import './static/iconfont/iconfont.css'
 import Cache from './utils/cache'
 import configs from './config/app.js'
 

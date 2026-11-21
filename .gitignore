@@ -13,3 +13,8 @@ Thumbs.db
 .idea/
 .vscode/
 .scratch/
+
+# Office lock files
+~$*
+# Trae editor
+.trae/

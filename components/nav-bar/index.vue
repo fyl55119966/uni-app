@@ -1,5 +1,5 @@
 <template>
-	<view class="nav" :style="{ background: bg }">
+	<view class="nav" :class="{ 'nav--fixed': fixed }" :style="{ background: bg }">
 		<view v-if="back" class="nav__back" @click="goBack">
 			<image class="nav__back-icon" src="/static/icons/ic-back.png" mode="aspectFit" />
 		</view>
@@ -16,7 +16,8 @@ export default {
 	props: {
 		title: { type: String, default: '' },
 		back: { type: Boolean, default: true },
-		bg: { type: String, default: 'transparent' }
+		bg: { type: String, default: 'transparent' },
+		fixed: { type: Boolean, default: false }
 	},
 	methods: {
 		goBack() {
@@ -39,6 +40,14 @@ export default {
 	height: 88rpx;
 	padding-top: var(--status-bar-height);
 	box-sizing: content-box;
+
+	&--fixed {
+		position: fixed;
+		z-index: 90;
+		top: 0;
+		right: 0;
+		left: 0;
+	}
 
 	&__back {
 		display: flex;

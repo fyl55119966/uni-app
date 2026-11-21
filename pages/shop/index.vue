@@ -1,30 +1,33 @@
 <template>
 	<view class="page">
 		<view class="top">
-			<view class="top__chip">¥{{ gold }}/g</view>
+			<view class="top__chip">¥{{ gold }}<text class="top__chip-unit">/g</text></view>
 			<text class="top__title">小店</text>
 		</view>
 
-		<view class="search">
-			<image class="search__icon" src="/static/icons/ic-search.png" mode="aspectFit" />
-			<text class="search__text" @click="goSearch">搜索金条、手链、吊坠</text>
-			<text class="search__fav" @click="goFavorite">收藏</text>
-		</view>
-
-		<scroll-view class="banners" scroll-x :show-scrollbar="false">
-			<view class="banners__inner">
-				<view v-for="item in shop.banners" :key="item.id" class="banner" @click="open(item)">
-					<image class="banner__img" :src="item.image" mode="aspectFill" />
-					<view class="banner__shade" />
-					<view class="banner__info">
-						<text class="banner__title">{{ item.title }}</text>
-						<text class="banner__price">首饰价 ¥{{ money(item.price) }}</text>
-						<text class="banner__gold">实时金价 {{ item.gold }}/g + 工费</text>
+		<view class="banners">
+			<image class="banners__bg" src="/static/images/gold/shop-top.jpg" mode="aspectFill" />
+			<scroll-view class="banners__scroll" scroll-x :show-scrollbar="false" :scroll-left="bannerScrollLeft"
+				@scroll="onBannerScroll">
+				<view class="banners__inner">
+					<view v-for="(item, index) in loopBanners" :key="index" class="banner" @click="open(item)">
+						<image class="banner__img" :src="item.image" mode="aspectFill" />
+						<view class="banner__info">
+							<text class="banner__title">{{ item.title }}</text>
+							<view class="banner__price">
+								<text class="banner__label">{{ item.labor ? '首饰价' : '售价' }}</text>
+								<g-price :value="item.price" size="md" color="#F04E50" font-size="32rpx" />
+							</view>
+							<view v-if="item.labor" class="banner__gold">实时金价 ¥{{ item.gold }}/g + 工费</view>
+						</view>
+						<view class="banner__tag">{{ item.tag }}</view>
 					</view>
-					<view class="banner__tag">{{ item.tag }}</view>
 				</view>
+			</scroll-view>
+			<view class="banners__hint">
+				<text v-for="(char, index) in hintChars" :key="index" class="banners__hint-char">{{ char }}</text>
 			</view>
-		</scroll-view>
+		</view>
 
 		<view class="cats">
 			<view v-for="(item, index) in shop.categories" :key="item" class="cats__item"
@@ -42,12 +45,12 @@
 					<text class="card__sold">已售{{ item.sold }}件</text>
 				</view>
 				<text class="card__title">{{ item.title }}</text>
-				<text class="card__fav">♡ {{ item.fav }}人关注  已售{{ item.sold }}件</text>
+				<text class="card__fav"><text class="card__heart">♥</text> {{ item.fav }}人关注  已售{{ item.sold }}件</text>
 				<text class="card__gram">{{ item.gram }}</text>
 				<view class="card__price">
-					<g-price :value="item.price" size="md" />
+					<g-price :value="item.price" size="md" color="#EF5E4F" />
 				</view>
-				<text class="card__labor">金价 + ¥{{ money(item.labor) }}/g工艺费</text>
+				<text class="card__labor" v-if="item.labor">金价 + ¥{{ money(item.labor) }}/g工艺费</text>
 				<view class="card__buy" @click.stop="open(item)">购买</view>
 			</view>
 		</view>
@@ -67,7 +70,12 @@ export default {
 	components: { pageFooter, gPrice, gEmpty },
 	data() {
 		return {
-			gold: '861.42',
+			gold: '869.93',
+			hintChars: '左右滑动查看更多'.split(''),
+			loopBanners: [],
+			bannerScrollLeft: 0,
+			bannerSetWidth: 0,
+			bannerResetting: false,
 			active: 0,
 			shop: { categories: [], banners: [], products: [] }
 		}
@@ -75,9 +83,8 @@ export default {
 	computed: {
 		filtered() {
 			if (this.active === 0) return this.shop.products
-			const ranges = [[0, 4], [4, 8], [8, 12]]
-			const [start, end] = ranges[this.active - 1] || [0, 4]
-			return this.shop.products.slice(start, end)
+			const category = this.shop.categories[this.active]
+			return this.shop.products.filter((item) => item.category === category)
 		}
 	},
 	onShow() {
@@ -87,149 +94,213 @@ export default {
 		async load() {
 			const [shop, goods] = await Promise.all([getShop(), allGoods()])
 			this.shop = { ...shop, products: goods.filter((item) => item.type === 'jewelry') }
+			this.initBannerLoop()
+		},
+		initBannerLoop() {
+			const list = this.shop.banners || []
+			if (!list.length || this.loopBanners.length) return
+			this.loopBanners = [...list, ...list, ...list]
+			this.bannerSetWidth = uni.upx2px((436 + 16) * list.length)
+			this.$nextTick(() => {
+				this.bannerResetting = true
+				this.bannerScrollLeft = this.bannerSetWidth
+				setTimeout(() => {
+					this.bannerResetting = false
+				}, 80)
+			})
+		},
+		onBannerScroll(e) {
+			if (this.bannerResetting) return
+			const setWidth = this.bannerSetWidth
+			if (!setWidth) return
+			const scrollLeft = e.detail.scrollLeft
+			if (scrollLeft < setWidth * 0.5) {
+				this.jumpBanner(scrollLeft + setWidth)
+			} else if (scrollLeft > setWidth * 2.5) {
+				this.jumpBanner(scrollLeft - setWidth)
+			}
+		},
+		jumpBanner(left) {
+			this.bannerResetting = true
+			this.bannerScrollLeft = Math.round(left)
+			setTimeout(() => {
+				this.bannerResetting = false
+			}, 60)
 		},
 		money(value) {
 			return Number(value || 0).toFixed(2)
 		},
 		open(item) {
 			uni.navigateTo({ url: `/pages/goods_detail/index?type=jewelry&id=${item.id}` })
-		},
-		goSearch() {
-			uni.navigateTo({ url: '/pages/search/index' })
-		},
-		goFavorite() {
-			uni.navigateTo({ url: '/pages/favorite/index' })
 		}
 	}
 }
 </script>
 
 <style lang="scss" scoped>
-.search {
-	display: flex;
-	align-items: center;
-	height: 72rpx;
-	margin: 0 24rpx 16rpx;
-	padding: 0 20rpx;
-	background: #fff;
-	border-radius: $gold-radius-pill;
-
-	&__icon {
-		width: 28rpx;
-		height: 28rpx;
-		margin-right: 12rpx;
-	}
-
-	&__text {
-		flex: 1;
-		font-size: 24rpx;
-		color: $gold-ink-300;
-	}
-
-	&__fav {
-		font-size: 24rpx;
-		color: $gold-600;
-	}
-}
-
 .page {
 	min-height: 100vh;
 	padding-bottom: calc(300rpx + env(safe-area-inset-bottom));
-	background: $gold-cream-50;
+	background: #F5F4F1;
 }
 
 .top {
-	position: relative;
+	position: sticky;
+	top: 0;
+	z-index: 99;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: calc(88rpx + var(--status-bar-height));
 	padding-top: var(--status-bar-height);
+	background: #fff;
 
 	&__chip {
 		position: absolute;
-		left: 24rpx;
-		bottom: 18rpx;
-		padding: 6rpx 18rpx;
-		background: $gold-100;
-		border: 1rpx solid $gold-200;
-		border-radius: $gold-radius-pill;
-		font-size: 24rpx;
+		left: 32rpx;
+		bottom: 6rpx;
+		height: 62rpx;
+		padding: 0 24rpx;
+		background: #F7F7F7;
+		border-radius: 6rpx;
+		font-size: 32rpx;
 		font-weight: 700;
-		color: $gold-600;
+		line-height: 62rpx;
+		color: #D74842;
+		box-sizing: border-box;
+
+		&-unit {
+			font-size: 22rpx;
+		}
 	}
 
 	&__title {
-		font-size: 34rpx;
+		margin-top: 14rpx;
+		font-size: 38rpx;
 		font-weight: 700;
-		color: $gold-ink-900;
+		color: #111111;
 	}
 }
 
 .banners {
-	white-space: nowrap;
+	position: relative;
+	height: 599rpx;
+	overflow: hidden;
+	background: #EFE3C8;
+
+	&__bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	&__scroll {
+		position: relative;
+		z-index: 1;
+		height: 100%;
+		white-space: nowrap;
+	}
 
 	&__inner {
+		display: inline-flex;
+		padding: 128rpx 24rpx 0;
+	}
+
+	&__hint {
+		position: absolute;
+		z-index: 2;
+		top: 60.5%;
+		right: 0;
 		display: flex;
-		padding: 10rpx 24rpx 0;
+		flex-direction: column;
+		align-items: center;
+		width: 40rpx;
+		padding: 16rpx 0;
+		background: #FFFFFF;
+		border-radius: 12rpx 0 0 12rpx;
+		transform: translateY(-50%);
+		pointer-events: none;
+
+		&-char {
+			font-size: 22rpx;
+			line-height: 23rpx;
+			color: #3B3B3B;
+		}
 	}
 }
 
 .banner {
 	position: relative;
 	flex: none;
-	width: 520rpx;
-	height: 460rpx;
-	margin-right: 20rpx;
+	width: 436rpx;
+	height: 424rpx;
+	margin-right: 16rpx;
+	padding: 8rpx;
 	overflow: hidden;
-	border-radius: $gold-radius-lg;
-	background: $gold-cream-200;
+	border-radius: $gold-radius;
+	background: #fff;
+	box-sizing: border-box;
 
 	&__img {
+		display: block;
 		width: 100%;
-		height: 100%;
-	}
-
-	&__shade {
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 100%);
+		height: 278rpx;
+		border-radius: 8rpx;
+		background: $gold-cream-200;
 	}
 
 	&__info {
-		position: absolute;
-		left: 24rpx;
-		bottom: 20rpx;
 		display: flex;
 		flex-direction: column;
+		padding: 8rpx 10rpx 0;
 	}
 
 	&__title {
-		font-size: 30rpx;
+		font-size: 28rpx;
 		font-weight: 700;
-		color: #fff;
+		line-height: 34rpx;
+		color: #30291F;
 	}
 
 	&__price {
-		margin-top: 8rpx;
-		font-size: 26rpx;
-		color: #FFE9BC;
+		display: flex;
+		align-items: baseline;
+		margin-top: 2rpx;
+	}
+
+	&__label {
+		margin-right: 4rpx;
+		font-size: 22rpx;
+		color: $gold-ink-300;
 	}
 
 	&__gold {
+		display: block;
+		width: 244rpx;
 		margin-top: 4rpx;
-		font-size: 20rpx;
-		color: rgba(255, 255, 255, 0.8);
+		overflow: hidden;
+		font-size: 22rpx;
+		line-height: 26rpx;
+		color: #A3A3A3;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	&__tag {
 		position: absolute;
-		right: 20rpx;
-		bottom: 20rpx;
-		padding: 8rpx 16rpx;
-		background: #2FA36B;
-		border-radius: 8rpx;
-		font-size: 22rpx;
+		right: 8rpx;
+		bottom: 19rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 50rpx;
+		padding: 0 8rpx;
+		background: #49B873;
+		border-radius: 6rpx;
+		font-size: 24rpx;
+		font-weight: 700;
 		color: #fff;
 	}
 }
@@ -237,17 +308,15 @@ export default {
 .cats {
 	display: flex;
 	align-items: center;
-	margin-top: 24rpx;
-	padding: 0 24rpx;
 	background: #fff;
 
 	&__item {
 		position: relative;
+		flex: 1;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		padding: 24rpx 0;
-		margin-right: 48rpx;
 	}
 
 	&__text {
@@ -257,7 +326,7 @@ export default {
 
 	&__item.is-active &__text {
 		font-weight: 700;
-		color: $gold-600;
+		color: #C69738;
 	}
 
 	&__line {
@@ -265,7 +334,7 @@ export default {
 		bottom: 8rpx;
 		width: 48rpx;
 		height: 4rpx;
-		background: $gold-600;
+		background: #C69738;
 		border-radius: 2rpx;
 	}
 }
@@ -280,18 +349,17 @@ export default {
 .card {
 	width: 342rpx;
 	margin-bottom: 20rpx;
-	padding: 16rpx 16rpx 20rpx;
+	padding: 0 24rpx 20rpx;
+	overflow: hidden;
 	background: #fff;
 	border-radius: $gold-radius;
-	border: 1rpx solid $gold-line;
 	box-sizing: border-box;
 
 	&__media {
 		position: relative;
-		width: 100%;
-		height: 320rpx;
+		height: 282rpx;
+		margin: 0 -24rpx;
 		overflow: hidden;
-		border-radius: $gold-radius-sm;
 		background: $gold-cream-200;
 	}
 
@@ -326,6 +394,10 @@ export default {
 		color: $gold-ink-300;
 	}
 
+	&__heart {
+		color: #EF5E4F;
+	}
+
 	&__gram {
 		display: inline-block;
 		margin-top: 8rpx;
@@ -339,16 +411,14 @@ export default {
 	&__price {
 		display: block;
 		margin-top: 8rpx;
-		font-size: 32rpx;
-		font-weight: 800;
-		color: #E93323;
 	}
 
 	&__labor {
 		display: block;
 		margin-top: 2rpx;
 		font-size: 18rpx;
-		color: $gold-ink-400;
+		font-weight: 600;
+		color: #756F66;
 	}
 
 	&__buy {
@@ -357,11 +427,11 @@ export default {
 		justify-content: center;
 		height: 64rpx;
 		margin-top: 12rpx;
-		background: $gold-gradient;
+		background: #D6A43A;
 		border-radius: 8rpx;
 		font-size: 26rpx;
 		font-weight: 600;
-		color: #fff;
+		color: #352811;
 	}
 }
 </style>

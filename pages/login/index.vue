@@ -1,10 +1,10 @@
 <template>
-	<view class="page">
-		<nav-bar title="登录" />
+	<view class="page" :style="{ '--status-bar-height': statusBarHeight + 'px' }">
+		<nav-bar title="登录" fixed bg="#FFFAEF" />
 
 		<view class="brand">
 			<view class="brand__logo">
-				<image class="brand__img" src="/static/images/gold/logo.png" mode="aspectFit" />
+				<image class="brand__img" src="/static/images/gold/login-logo.png" mode="aspectFit" />
 			</view>
 			<text class="brand__name">上金所有金店</text>
 			<text class="brand__en">Shangjin Gold Stores</text>
@@ -26,10 +26,9 @@
 			</view>
 
 			<view v-if="mode === 'register'" class="field">
-				<input v-model="inviteCode" class="field__input" maxlength="16"
-					:placeholder="inviteCode ? '' : '邀请码（选填）'" placeholder-class="field__ph" />
+				<input v-model="inviteCode" class="field__input" maxlength="16" placeholder="邀请码（选填）"
+					placeholder-class="field__ph" />
 			</view>
-			<text v-if="mode === 'register' && inviteCode" class="field__hint">已通过邀请链接预填，注册后不可修改</text>
 
 			<view class="field">
 				<input v-model="password" class="field__input" :password="!showPwd" maxlength="16" placeholder="请输入密码"
@@ -64,8 +63,8 @@
 				<text class="agree__link" @click.stop="showAgreement">《用户协议隐私政策》</text>
 			</view>
 
-			<g-button class="login-submit" block size="lg" :loading="submitting" :text="mode === 'login' ? '登录' : '注册'"
-				@click="submit" />
+			<button class="login-submit" :loading="submitting" :disabled="submitting"
+				hover-class="login-submit--hover" @click="submit">{{ mode === 'login' ? '登录' : '注册' }}</button>
 		</view>
 
 		<view class="other">
@@ -75,13 +74,26 @@
 		</view>
 		<view class="other__icons">
 			<view class="other__icon" @click="wechatLogin">
-				<image class="other__img" src="/static/images/gold/wechat.png" mode="aspectFit" />
+				<image class="other__img" src="/static/images/gold/login-wechat.png" mode="aspectFit" />
 			</view>
 			<view class="other__icon" @click="phoneLogin">
-				<image class="other__img" src="/static/images/gold/phone.png" mode="aspectFit" />
+				<image class="other__img" src="/static/images/gold/login-phone.png" mode="aspectFit" />
 			</view>
-			<view class="other__icon" @click="forgot">
-				<image class="other__img" src="/static/images/gold/lock.png" mode="aspectFit" />
+			<view v-if="mode === 'register'" class="other__icon" @click="forgot">
+				<image class="other__img" src="/static/images/gold/login-lock.png" mode="aspectFit" />
+			</view>
+		</view>
+
+		<view v-if="showWechatTip" class="tip-mask" @click="showWechatTip = false">
+			<view class="tip" @click.stop>
+				<text class="tip__tag">协议确认</text>
+				<text class="tip__title">温馨提示</text>
+				<text class="tip__body">为了向您提供账户与交易服务，请在继续前确认您已阅读并理解<text class="tip__strong">《用户协议》</text>和<text class="tip__strong">《隐私政策》</text>，并同意其中关于账户使用、个人信息处理及交易服务的约定。</text>
+				<text class="tip__link" @click="showAgreement">《用户协议隐私政策》</text>
+				<view class="tip__btns">
+					<view class="tip__btn tip__btn--plain" @click="showWechatTip = false">暂不同意</view>
+					<view class="tip__btn tip__btn--gold" @click="agreeWechat">同意并继续</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -89,14 +101,14 @@
 
 <script>
 import navBar from '@/components/nav-bar/index.vue'
-import gButton from '@/components/g-button/index.vue'
 import { login, register, wechatLogin as wechatApi } from '@/api/auth.js'
 import { setSession } from '@/utils/token.js'
 
 export default {
-	components: { navBar, gButton },
+	components: { navBar },
 	data() {
 		return {
+			statusBarHeight: 20,
 			mode: 'login',
 			phone: '',
 			password: '',
@@ -109,10 +121,13 @@ export default {
 			countdown: 0,
 			timer: null,
 			submitting: false,
-			redirect: ''
+			redirect: '',
+			showWechatTip: false
 		}
 	},
 	onLoad(query) {
+		const sysInfo = uni.getSystemInfoSync()
+		if (sysInfo.statusBarHeight) this.statusBarHeight = sysInfo.statusBarHeight
 		if (query && query.mode === 'register') this.mode = 'register'
 		if (query && query.invite) this.inviteCode = String(query.invite).toUpperCase()
 		if (query && query.redirect) {
@@ -140,6 +155,7 @@ export default {
 			for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)]
 			this.captchaCode = code
 			this.captcha = ''
+
 		},
 		sendSms() {
 			if (this.countdown > 0) return
@@ -164,7 +180,19 @@ export default {
 				showCancel: false
 			})
 		},
-		async wechatLogin() {
+		wechatLogin() {
+			if (!this.agreed) {
+				this.showWechatTip = true
+				return
+			}
+			this.doWechatLogin()
+		},
+		agreeWechat() {
+			this.agreed = true
+			this.showWechatTip = false
+			this.doWechatLogin()
+		},
+		async doWechatLogin() {
 			// #ifdef MP-WEIXIN
 			try {
 				const res = await new Promise((resolve, reject) => {
@@ -231,107 +259,126 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .nav__back-icon {
+	display: none;
+}
+
+::v-deep .nav__back::after {
+	width: 20rpx;
+	height: 20rpx;
+	border-bottom: 3rpx solid #333;
+	border-left: 3rpx solid #333;
+	transform: rotate(45deg);
+	content: '';
+}
+
+::v-deep .nav__title {
+	font-size: 38rpx;
+}
+
 .page {
 	min-height: 100vh;
 	padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
-	background: linear-gradient(180deg, #FFF6E5 0%, #FAF7F0 420rpx);
+	background: linear-gradient(180deg, #F7EBC6 0%, #FCF4DC 45%, #FFFFFF 100%);
 }
 
 .brand {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 57rpx 0 0;
+	padding: calc(130rpx + var(--status-bar-height)) 0 0;
 
 	&__logo {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 209rpx;
-		height: 209rpx;
+		width: 200rpx;
+		height: 200rpx;
 		background: #fff;
 		border-radius: 50%;
 		box-shadow: 0 12rpx 32rpx rgba(217, 161, 51, 0.18);
 	}
 
 	&__img {
-		width: 120rpx;
-		height: 120rpx;
+		width: 168rpx;
+		height: 168rpx;
 	}
 
 	&__name {
-		margin-top: 34rpx;
-		font-size: 48rpx;
+		margin-top: 30rpx;
+		font-size: 56rpx;
 		font-weight: 700;
 		letter-spacing: 3rpx;
-		color: $gold-ink-900;
+		color: #000;
 	}
 
 	&__en {
-		margin-top: 30rpx;
-		font-size: 24rpx;
-		color: $gold-ink-300;
+		margin-top: 20rpx;
+		font-size: 30rpx;
+		color: #999;
 	}
 }
 
 .tabs {
 	display: flex;
 	justify-content: center;
-	margin-top: 78rpx;
+	margin: 40rpx 40rpx 0;
+	border-bottom: 2rpx solid #EAE6DC;
 
 	&__item {
 		position: relative;
-		padding: 16rpx 44rpx 22rpx;
-		font-size: 30rpx;
-		color: $gold-ink-400;
+		padding: 16rpx 44rpx 24rpx;
+		font-size: 36rpx;
+		color: #999;
 
 		&.is-active {
 			font-weight: 700;
-			color: $gold-ink-900;
+			color: #000;
 		}
 
 		&.is-active::after {
 			position: absolute;
 			left: 50%;
-			bottom: 0;
-			width: 56rpx;
-			height: 6rpx;
-			margin-left: -28rpx;
-			background: $gold-600;
-			border-radius: 6rpx;
+			bottom: -2rpx;
+			width: 150rpx;
+			height: 8rpx;
+			margin-left: -75rpx;
+			background: linear-gradient(90deg, #F5CE5E 0%, #E0AC33 100%);
+			border-radius: 8rpx;
 			content: '';
 		}
 	}
 }
 
 .form {
-	padding: 71rpx 59rpx 0;
+	padding: 40rpx 59rpx 0;
 }
 
 .field {
 	display: flex;
 	align-items: center;
-	height: 96rpx;
-	margin-bottom: 26rpx;
+	height: 104rpx;
+	margin-bottom: 20rpx;
 	padding: 0 23rpx;
 	background: #fff;
-	border: 1rpx solid $gold-line;
-	border-radius: $gold-radius;
+	border: 1rpx solid #F0EDE6;
+	border-radius: 12rpx;
 
 	&__input {
 		flex: 1;
-		height: 96rpx;
+		height: 104rpx;
 		font-size: 28rpx;
 		color: $gold-ink-800;
 	}
 
 	&__ph {
-		color: $gold-ink-300;
+		color: #B3B3B3;
 	}
 
 	&__link {
 		margin-left: 16rpx;
-		font-size: 24rpx;
+		font-size: 26rpx;
+		font-weight: 350;
 		color: $gold-600;
 
 		&.is-disabled {
@@ -341,9 +388,10 @@ export default {
 
 	&__hint {
 		display: block;
-		margin: 28rpx 0 24rpx 4rpx;
+		margin: 16rpx 0 16rpx 4rpx;
 		font-size: 22rpx;
-		color: $gold-ink-300;
+		font-weight: 400;
+		color: #AAA;
 	}
 }
 
@@ -352,8 +400,8 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 176rpx;
-	height: 64rpx;
+	width: 184rpx;
+	height: 72rpx;
 	overflow: hidden;
 	background: #F5F0E4;
 	border-radius: 8rpx;
@@ -386,16 +434,16 @@ export default {
 .agree {
 	display: flex;
 	align-items: center;
-	margin: 6rpx 0 50rpx;
+	margin: 16rpx 0 34rpx;
 
 	&__box {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 28rpx;
-		height: 28rpx;
+		width: 32rpx;
+		height: 32rpx;
 		margin-right: 10rpx;
-		border: 2rpx solid $gold-line;
+		border: 2rpx solid #C6C2BA;
 		border-radius: 6rpx;
 
 		&.is-checked {
@@ -405,63 +453,154 @@ export default {
 	}
 
 	&__tick {
-		font-size: 20rpx;
+		font-size: 24rpx;
 		line-height: 1;
 		color: #fff;
 	}
 
 	&__text {
-		font-size: 22rpx;
-		color: $gold-ink-400;
+		font-size: 26rpx;
+		font-weight: 350;
+		color: #333;
 	}
 
 	&__link {
-		font-size: 22rpx;
+		margin-left: 16rpx;
+		font-size: 26rpx;
+		font-weight: 350;
 		color: $gold-600;
 	}
 }
 
 .login-submit {
-	margin-top: 45rpx;
-}
-
-.submit {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: 96rpx;
-	background: $gold-gradient;
-	border-radius: $gold-radius;
+	margin-top: 16rpx;
+	padding: 0;
 	font-size: 30rpx;
 	font-weight: 600;
+	line-height: 1;
+	background: #F0A93B;
+	border: none;
+	border-radius: 16rpx;
 	color: #fff;
 
-	&.is-disabled {
+	&::after {
+		border: none;
+	}
+
+	&--hover {
+		opacity: 0.85;
+	}
+
+	&[disabled] {
 		opacity: 0.7;
+	}
+}
+
+.tip-mask {
+	position: fixed;
+	z-index: 99;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.55);
+}
+
+.tip {
+	display: flex;
+	flex-direction: column;
+	width: 600rpx;
+	padding: 44rpx 44rpx 40rpx;
+	background: #fff;
+	border-radius: 24rpx;
+
+	&__tag {
+		font-size: 24rpx;
+		text-align: center;
+		color: $gold-ink-300;
+	}
+
+	&__title {
+		margin-top: 12rpx;
+		font-size: 36rpx;
+		font-weight: 700;
+		text-align: center;
+		color: $gold-ink-900;
+	}
+
+	&__body {
+		margin-top: 28rpx;
+		font-size: 26rpx;
+		line-height: 1.7;
+		color: $gold-ink-500;
+	}
+
+	&__strong {
+		font-weight: 600;
+		color: $gold-ink-900;
+	}
+
+	&__link {
+		margin-top: 20rpx;
+		font-size: 26rpx;
+		color: $gold-600;
+	}
+
+	&__btns {
+		display: flex;
+		margin-top: 40rpx;
+	}
+
+	&__btn {
+		flex: 1;
+		height: 80rpx;
+		font-size: 28rpx;
+		line-height: 80rpx;
+		text-align: center;
+		border-radius: 12rpx;
+
+		&--plain {
+			margin-right: 24rpx;
+			border: 1rpx solid $gold-line;
+			color: $gold-ink-500;
+		}
+
+		&--gold {
+			font-weight: 600;
+			background: #F0A93B;
+			color: #fff;
+		}
 	}
 }
 
 .other {
 	display: flex;
 	align-items: center;
-	padding: 53rpx 84rpx 0;
+	padding: 30rpx 60rpx 0;
 
 	&__divider {
 		flex: 1;
-		height: 1rpx;
-		background: $gold-line;
+		height: 2rpx;
+		background: #D8D4CA;
 	}
 
 	&__text {
-		margin: 0 20rpx;
-		font-size: 22rpx;
+		margin: 0 32rpx;
+		font-size: 26rpx;
 		color: $gold-ink-300;
 	}
 
 	&__icons {
 		display: flex;
 		justify-content: center;
-		margin-top: 47rpx;
+		margin-top: 36rpx;
 	}
 
 	&__icon {
@@ -470,15 +609,15 @@ export default {
 		justify-content: center;
 		width: 88rpx;
 		height: 88rpx;
-		margin: 0 24rpx;
+		margin: 0 32rpx;
 		background: #fff;
-		border: 1rpx solid $gold-line;
+		border: 1rpx solid #ECE9E2;
 		border-radius: 50%;
 	}
 
 	&__img {
-		width: 38rpx;
-		height: 38rpx;
+		width: 44rpx;
+		height: 44rpx;
 	}
 }
 </style>
